@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 5000
 
 let app = express();
 
-app.get('/webhook', (req, res) => {
+app.post('/webhook', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({'test': "bonjour"}))
 })

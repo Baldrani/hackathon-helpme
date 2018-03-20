@@ -6,7 +6,10 @@ let app = express();
 
 app.post('/webhook', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({"speech":req}))
+    res.send(JSON.stringify({
+        "speech": "https://www.youtube.com/watch?v=R4yUBad1bNY",
+        "displayText": "https://www.youtube.com/watch?v=R4yUBad1bNY",
+    }))
 })
 /*
 app.use(express.static(path.join(__dirname, 'public')))

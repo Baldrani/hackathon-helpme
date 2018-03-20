@@ -1,14 +1,17 @@
 const express = require('express')
 const path = require('path')
+const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 5000
 
 let app = express();
 
 app.post('/webhook', (req, res) => {
+    let object = req.param('ObjectToRepare');
+
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
-        "speech": "https://www.youtube.com/watch?v=R4yUBad1bNY",
-        "displayText": "https://www.youtube.com/watch?v=R4yUBad1bNY",
+        "speech": object,
+        "displayText": object,
     }))
 })
 /*

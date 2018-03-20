@@ -2,14 +2,18 @@ const express = require('express')
 const path = require('path')
 const PORT = process.env.PORT || 5000
 
-express()
-  .use(express.static(path.join(__dirname, 'public')))
+let app = express();
+
+app.get('/webhook', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({'test': "bonjour"}))
+})
+
+app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get(['/','/test'], (req, res) => {
-      console.log('test')
       res.setHeader('Content-Type', 'application/json');
-      //res.send(JSON.stringify({ 'speech': output, 'displayText': output }));
       res.send(JSON.stringify({
           "speech": "this text is spoken out loud if the platform supports voice interactions",
           "displayText": "this text is displayed visually",
@@ -59,6 +63,24 @@ express()
       //res.render('pages/index')
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
  function callWeatherApi (city, date) {

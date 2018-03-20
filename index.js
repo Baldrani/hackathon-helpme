@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5000
 let app = express();
 
 app.post('/webhook', (req, res) => {
-    let object = req.param('ObjectToRepare');
+    let object = req.param('parameters.ObjectToRepare');
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({

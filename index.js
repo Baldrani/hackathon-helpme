@@ -6,7 +6,15 @@ let app = express();
 
 app.post('/webhook', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({'test': "bonjour"}))
+    res.send(JSON.stringify({
+        "speech": "this text is spoken out loud if the platform supports voice interactions",
+        "displayText": "this text is displayed visually",
+        "messages": {
+          "type": 1,
+          "title": "card title",
+          "subtitle": "card text",
+          "imageUrl": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png"
+        }))
 })
 
 app.use(express.static(path.join(__dirname, 'public')))

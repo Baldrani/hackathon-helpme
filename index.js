@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 
 app.post('/webhook', (req, res) => {
-    let object = req.body.parameters.ObjectToRepare;
+    let object = req.body.result.parameters.ObjectToRepare;
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({

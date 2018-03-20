@@ -5,12 +5,8 @@ const PORT = process.env.PORT || 5000
 let app = express();
 
 app.post('/webhook', (req, res) => {
-    console.log(req);
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({
-        "speech": "https://www.youtube.com/watch?v=R4yUBad1bNY",
-        "displayText": "https://www.youtube.com/watch?v=R4yUBad1bNY",
-    }))
+    res.send(req)
 })
 /*
 app.use(express.static(path.join(__dirname, 'public')))

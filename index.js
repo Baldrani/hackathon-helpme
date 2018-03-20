@@ -5,8 +5,12 @@ const PORT = process.env.PORT || 5000
 
 let app = express();
 
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
+
 app.post('/webhook', (req, res) => {
-    let object = req.param('parameters.ObjectToRepare');
+    let object = req.body.parameters;
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({

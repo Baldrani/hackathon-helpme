@@ -9,13 +9,13 @@ app.post('/webhook', (req, res) => {
     res.send(JSON.stringify({
         "speech": "this text is spoken out loud if the platform supports voice interactions",
         "displayText": "this text is displayed visually",
-        }))
+    }))
 })
 
 app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get(['/','/test'], (req, res) => {
+  .post(['/','/test'], (req, res) => {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({
           "speech": "this text is spoken out loud if the platform supports voice interactions",
@@ -63,22 +63,8 @@ app.use(express.static(path.join(__dirname, 'public')))
             }
           }
         }))
-      //res.render('pages/index')
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

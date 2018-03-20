@@ -11,7 +11,7 @@ app.post('/webhook', (req, res) => {
         "displayText": "https://www.youtube.com/watch?v=R4yUBad1bNY",
     }))
 })
-
+/*
 app.use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')

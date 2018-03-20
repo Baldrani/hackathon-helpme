@@ -7,7 +7,7 @@ let app = express();
 app.post('/webhook', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
-        "speech": "this text is spoken out loud if the platform supports voice interactions",
+        "speech": "https://www.youtube.com/watch?v=R4yUBad1bNY",
         "displayText": "https://www.youtube.com/watch?v=R4yUBad1bNY",
     }))
 })

@@ -14,7 +14,7 @@ app.post('/webhook', (req, res) => {
           "title": "card title",
           "subtitle": "card text",
           "imageUrl": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png"
-        }))
+      }}))
 })
 
 app.use(express.static(path.join(__dirname, 'public')))

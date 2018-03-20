@@ -1,3 +1,12 @@
+# Workflow
+In case of new feature : 
+
+`git checkout master`
+`git pull --rebase`
+`git checkout -b feature/ma-feature`
+
+Once feature is ready, create a pull request
+
 # node-js-getting-started
 
 A barebones Node.js app using [Express 4](http://expressjs.com/).

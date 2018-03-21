@@ -1,4 +1,5 @@
-//AIzaSyCQGrQhvat6zPid2Gb-STl8SeZZ3Ln4a9o
+//AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o
+//Cx 002153875831383056448:refccz5vls0
 //Google API KEY
 
 const express = require('express')
@@ -14,47 +15,46 @@ app.use(bodyParser.urlencoded({
     extended: true
 })); // support encoded bodies
 
-function hndlr(obj) {
-    console.log(obj)
-}
-
 function hndlr(response) {
-
+    console.log(eval(response))
+    /* GOOGLE EXEMPLE
     for (var i = 0; i < response.items.length; i++) {
         var item = response.items[i];
         // in production code, item.htmlTitle should have the HTML entities escaped.
         //return JSON.parse(item)
         console.log(item)
     }
+    */
 }
+
 app.use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'ejs');
 
 
 app.get('/', (req, res) => {
-        let d;
-        axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyCQGrQhvat6zPid2Gb-STl8SeZZ3Ln4a9o&cx=017576662512468239146:omuauf_lfve&q=cars&callback=hndlr')
-            .then(response => {
-                d = JSON.parse(response.data)
-                //eval(response.data);
+    axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=017576662512468239146:omuauf_lfve&q=cars&callback=hndlr')
+        .then(response => {
+            //d = JSON.parse(response.data)
+            //console.log(response.data)
+            //let test = eval(response.data)
+            //JSON.parse(response.data)
+            res.render('pages/index', {
+                //'data': JSON.stringify(eval(response))
+                'data' : 'test'
             })
-            .catch(error => {
-                console.log(error);
-            })
-        res.render('pages/index', {
-            'data': d
         })
-    })
-
-    /*
+        .catch(error => {
+            console.log(error);
+        })
+})
+/*
     app.post('/webhook', (req, res) => {
         let object = req.body.result.parameters.ObjectToRepare;
 
         //Check google api
         //With main stuff
         //->prompt something
-        //
 
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({
@@ -62,8 +62,8 @@ app.get('/', (req, res) => {
             "displayText": object,
         }))
     })
-    */
-
+*/
+.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
     /*
     app.use(express.static(path.join(__dirname, 'public')))
@@ -119,7 +119,6 @@ app.get('/', (req, res) => {
             }))
       })
       */
-    .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 
 

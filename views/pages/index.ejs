@@ -10,6 +10,7 @@
     <% include ../partials/nav.ejs %>
     <%= data %>
     <div id="content"></div>
+    <!--
     <script>
         function hndlr(response) {
             var reg = /youtube/
@@ -25,10 +26,10 @@
             })
         }
     </script>
-    <script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q=manger+du+fromage&amp;callback=hndlr">
-    </script>
+    <script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q=manger+du+fromage&callback=hndlr">
+    </script> -->
     <script>
-        //console.log(JSON.stringify(<%= data %>))
+        console.log(JSON.stringify(<%= data %>))
     </script>
 </body>
 

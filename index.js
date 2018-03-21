@@ -63,7 +63,7 @@ app.post('/', (req, res) => {
     res.send(JSON.stringify({
         "speech": "",
         "messages": [
-            /*
+
             {
               "buttons": [
                 {
@@ -77,26 +77,49 @@ app.post('/', (req, res) => {
               "title": "Card Title",
               "type": 1
             },
-            */
             {
               "platform": "facebook",
+              "replies": [
+                "Quick reply 1",
+                "Quick reply 2",
+                "Quick reply 3"
+              ],
+              "title": "Quick Reply Title",
+              "type": 2
+            },
+            {
               "type": 4,
+              "platform": "facebook",
               "payload": {
-                  "elements": [
-                     {
-                        "media_type": "image",
-                        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Simon_sinek.jpg/260px-Simon_sinek.jpg",
-                        "buttons": [
-                           {
-                              "type": "web_url",
-                              "url": "http://google.com",
-                              "title": "View Website",
-                           }
-                        ]
-                     }
-                  ]
+                "facebook": {
+                  "attachment": {
+                    "type": "video",
+                    "payload": {
+                      "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
+                    }
+                  }
+                }
               }
-          }
+            },
+            {
+              "type": 4,
+              "platform": "facebook",
+              "payload": {
+                "facebook": {
+                    "attachment":{
+                    "type":"template",
+                    "payload":{
+                      "template_type":"open_graph",
+                      "elements":[
+                         {
+                          "url":"https://www.youtube.com/watch?v=y9A1MEbgLyA"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
         ]
     }
     ))

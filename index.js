@@ -1,78 +1,125 @@
+//AIzaSyCQGrQhvat6zPid2Gb-STl8SeZZ3Ln4a9o
+//Google API KEY
+
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
+const axios = require('axios')
 const PORT = process.env.PORT || 5000
 
 let app = express();
 
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.urlencoded({
+    extended: true
+})); // support encoded bodies
 
+function hndlr(obj) {
+    console.log(obj)
+}
 
-app.post('/webhook', (req, res) => {
-    let object = req.body.result.parameters.ObjectToRepare;
+function hndlr(response) {
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({
-        "speech": object,
-        "displayText": object,
-    }))
-})
-/*
+    for (var i = 0; i < response.items.length; i++) {
+        var item = response.items[i];
+        // in production code, item.htmlTitle should have the HTML entities escaped.
+        //return JSON.parse(item)
+        console.log(item)
+    }
+}
 app.use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .post(['/','/test'], (req, res) => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({
-          "speech": "this text is spoken out loud if the platform supports voice interactions",
-          "displayText": "this text is displayed visually",
-          "messages": {
-            "type": 1,
-            "title": "card title",
-            "subtitle": "card text",
-            "imageUrl": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png"
-          },
-          "data": {
-            "google": {
-              "expectUserResponse": true,
-              "richResponse": {
-                "items": [
-                  {
-                    "simpleResponse": {
-                      "textToSpeech": "this is a simple response"
-                    }
-                  }
-                ]
-              }
-            },
-            "facebook": {
-              "text": "Hello, Facebook!"
-            },
-            "slack": {
-              "text": "This is a text response for Slack."
-            }
-          },
-          "contextOut": [
-            {
-              "name": "context name",
-              "lifespan": 5,
-              "parameters": {
-                "param": "param value"
-              }
-            }
-          ],
-          "source": "example.com",
-          "followupEvent": {
-            "name": "event name",
-            "parameters": {
-              "param": "param value"
-            }
-          }
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs');
+
+
+app.get('/', (req, res) => {
+        let d;
+        axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyCQGrQhvat6zPid2Gb-STl8SeZZ3Ln4a9o&cx=017576662512468239146:omuauf_lfve&q=cars&callback=hndlr')
+            .then(response => {
+                d = JSON.parse(response.data)
+                //eval(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        res.render('pages/index', {
+            'data': d
+        })
+    })
+
+    /*
+    app.post('/webhook', (req, res) => {
+        let object = req.body.result.parameters.ObjectToRepare;
+
+        //Check google api
+        //With main stuff
+        //->prompt something
+        //
+
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+            "speech": object,
+            "displayText": object,
         }))
-  })
-  */
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+    })
+    */
+
+
+    /*
+    app.use(express.static(path.join(__dirname, 'public')))
+      .set('views', path.join(__dirname, 'views'))
+      .set('view engine', 'ejs')
+      .post(['/','/test'], (req, res) => {
+          res.setHeader('Content-Type', 'application/json');
+          res.send(JSON.stringify({
+              "speech": "this text is spoken out loud if the platform supports voice interactions",
+              "displayText": "this text is displayed visually",
+              "messages": {
+                "type": 1,
+                "title": "card title",
+                "subtitle": "card text",
+                "imageUrl": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png"
+              },
+              "data": {
+                "google": {
+                  "expectUserResponse": true,
+                  "richResponse": {
+                    "items": [
+                      {
+                        "simpleResponse": {
+                          "textToSpeech": "this is a simple response"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "facebook": {
+                  "text": "Hello, Facebook!"
+                },
+                "slack": {
+                  "text": "This is a text response for Slack."
+                }
+              },
+              "contextOut": [
+                {
+                  "name": "context name",
+                  "lifespan": 5,
+                  "parameters": {
+                    "param": "param value"
+                  }
+                }
+              ],
+              "source": "example.com",
+              "followupEvent": {
+                "name": "event name",
+                "parameters": {
+                  "param": "param value"
+                }
+              }
+            }))
+      })
+      */
+    .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 
 

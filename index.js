@@ -3,7 +3,7 @@
 //Cx 002153875831383056448:refccz5vls0
 
 //PSID 1750745394945827
-//FBaccess token EAAIpmZC2uBGwBAFARxZCGgcNqaCz1hcbohy6iY9BENtwu2T7VdhwnaW8Y7R8uPWIakrJxqZCuWWnDlQiR2PSywmA8i0ayhvtu7XZB4kjsHTWESROYo8BHIq8ZCyZAe5Ee79Pz80uzlPR6DMDLFLl8c5r1xkPpWQRKj8E796GS9Ur0LvZA3u58VU9l34s4mAGf2aJZC26kubBgAZDZD
+const provisionalFbToken = "EAAIpmZC2uBGwBAKiNZARfwjTaaRZBGKfS3QtsGqhetaz8uCbtUyUBe18xBSRz4ZCrKnmxvdK2BxYm2pQzOaUnHPWRh2ET8vrDnp2ZCznlhzfk2ZCOnkGnes4E4nv8YkwLTWRDDvENX5ZBbZA4LfuGLO7yZAAUYQeRJARWFGKEBrcP6CAC6gZCw1CUMQ7eiBvwMkb2X6FBPLIPihwZDZD"
 
 const express = require('express')
 const path = require('path')
@@ -11,11 +11,12 @@ const bodyParser = require('body-parser')
 const axios = require('axios')
 const PORT = process.env.PORT || 5000
 
+
 const fs = require('fs')
 fs.writeFile('db.json', '')
 
 
-//DB
+//D
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('db.json')
@@ -23,7 +24,7 @@ const db = low(adapter)
 // Set some defaults (required if your JSON file is empty)
 db.defaults({ users: [{id: 'init'}], count: 0 })
   .write()
-const dbUsers = db.get('users');
+  let dbUsers = db.get('users');
 
 
 let app = express();
@@ -55,11 +56,23 @@ app.use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'ejs');
 
+function getFacebookInfo(user_id)
+{
+    //Get user information from facebook
+    axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token='+provisionalFbToken)
+        .then(response => {
+            let json = {id: response.data.id, last_name: response.data.last_name, first_name: response.data.first_name, interventions: []}
+            console.log(json)
+            return JSON.stringify(json)
+        }).catch(error => {
+            console.log(error)
+        })
+}
+
 function addAction(user_id, session_id, action)
 {
     if(dbUsers.find({id: 'init'}).value() === undefined){
         if(dbUsers.find({ id:  user_id }).value().id ===  user_id){
-            console.log('edit user')
             //Check session
             if(dbUsers.find({id: user_id}).get('interventions').find({id: session_id}).value() === undefined){
                 console.log('create session')
@@ -69,7 +82,9 @@ function addAction(user_id, session_id, action)
             } else {
                 console.log('add action')
                 console.log(dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions').value())
-                dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions').push(action).write()
+                dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions')
+                    .push({test: 'test'})
+                    .write()
             }
         } else {
             console.log('create user')
@@ -78,36 +93,39 @@ function addAction(user_id, session_id, action)
         }
     } else {
         console.log('initialisation users')
-        dbUsers.push({id: user_id, interventions: []})
+        //console.log(getFacebookInfo(user_id))
+        dbUsers.push(getFacebookInfo(user_id))
             .write()
+        /*
+        dbUsers.push({"id":"1750745394945827","last_name":"Myn","first_name":"Mawel","interventions":[]})
+            .write()
+        */
         console.log('remove init')
         dbUsers.remove({ id: 'init' })
           .write()
     }
-
     // Increment count
     db.update('count', n => n + 1)
       .write()
 }
 
+function sendMail(user_id)
+{
+    dbUsers.get('')
+}
+
 app.post('/', (req, res) => {
     let user_id = req.body.originalRequest.data.sender.id;
     let session_id = req.body.sessionId;
-    //BUG WTF WITH THE .id
-    let action = {test: "test"}
-    addAction(user_id, session_id, action)
 
+    //console.log(req.body.originalRequest.data.sender.id)
+    addAction(user_id, session_id, getFacebookInfo(user_id))
+    //getFacebookInfo(user_id)
+
+    //addAction(user_id, session_id, {test: 'test'})
+    //addAction(user_id, session_id, getFacebookInfo(user_id))
     switch (req.body.result.metadata.intentName) {
         case 'test':
-            /*
-            //Get user information from facebook
-            axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token=EAAIpmZC2uBGwBAFARxZCGgcNqaCz1hcbohy6iY9BENtwu2T7VdhwnaW8Y7R8uPWIakrJxqZCuWWnDlQiR2PSywmA8i0ayhvtu7XZB4kjsHTWESROYo8BHIq8ZCyZAe5Ee79Pz80uzlPR6DMDLFLl8c5r1xkPpWQRKj8E796GS9Ur0LvZA3u58VU9l34s4mAGf2aJZC26kubBgAZDZD')
-                .then(response => {
-                    console.log(response)
-                }).catch(error => {
-                    console.log(error)
-                })
-            */
             //Working with Dialog Flow
             /*
             let verb = req.body.result.parameters.HelpingWords;

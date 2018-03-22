@@ -1,8 +1,21 @@
 {
   "users": [
     {
-      "id": "init"
+      "id": "1750745394945827",
+      "interventions": [
+        {
+          "id": "d57e3201-b541-40c9-867e-f25c5fdd0db7",
+          "actions": [
+            {
+              "test": "test"
+            },
+            {
+              "test": "test"
+            }
+          ]
+        }
+      ]
     }
   ],
-  "count": 0
+  "count": 4
 }

@@ -70,31 +70,30 @@ async function addAction(user_id, session_id, action)
         if(dbUsers.find({ id:  user_id }).value().id ===  user_id){
             //Check session
             if(dbUsers.find({id: user_id}).get('interventions').find({id: session_id}).value() === undefined){
-                console.log('create session')
+                //console.log('create session')
                 dbUsers.find({ id:  user_id }).get('interventions')
                   .push({ id: session_id, actions: [] })
                   .write()
                   addAction(user_id, session_id, action)
             } else {
-                console.log('add action')
-                console.log(dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions').value())
+                //console.log('add action')
                 dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions')
                     .push(action)
                     .write()
             }
         } else {
             const user = await getFacebookInfo(user_id);
-            console.log('create user')
+            //console.log('create user')
             dbUsers.push(user)
                 .write()
             addAction(user_id, session_id, action)
         }
     } else {
         const user = await getFacebookInfo(user_id)
-        console.log('initialisation users')
+        //console.log('initialisation users')
         dbUsers.push(user)
             .write()
-        console.log('remove init')
+        //console.log('remove init')
         dbUsers.remove({ id: 'init' })
           .write();
         addAction(user_id, session_id, action)
@@ -104,46 +103,212 @@ async function addAction(user_id, session_id, action)
       .write()
 }
 
+
 app.post('/', (req, res) => {
+
     let user_id = req.body.originalRequest.data.sender.id;
     let session_id = req.body.sessionId;
-
-    addAction(user_id, session_id, {test: "test"})
+    let dbUsers = db.get('users');
 
     switch (req.body.result.metadata.intentName) {
         case 'test':
-            res.send(JSON.stringify(
-                {"speech": "",
+            addAction(user_id, session_id, {chooseCategory: "Choix catégorie"})
+            res.send(JSON.stringify({
+                "speech": "",
                 "messages": [
-                    //Good Assistance return
                     {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                        "facebook": {
-                            "attachment":{
-                              "type":"template",
-                              "payload":{
-                                "template_type":"button",
-                                "text":"Vous avez besoin d'aide, contactez nos assistants ?",
-                                "buttons":[
-                                  {
-                                    "type":"phone_number",
-                                    "title":"Call Representative",
-                                    "payload":"+33613499190"
-                                  }
-                                ]
-                              }
-                          }
-                        }
-                      }
-                  }
+                        "type": 0,
+                        "platform": "facebook",
+                        "speech": "Choisissez votre categorie"
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre téléphone",
+                        "subtitle": "",
+                        "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre PC",
+                        "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre Box",
+                        "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+                        "buttons": [
+                            {
+                                "text": "Chosir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Autre",
+                        "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "speech": ""
+                    }
                 ]
-            }
-            ));
+            }));
+
+            break;
+        case 'menu-principal':
+            res.send(JSON.stringify({
+                "speech": "",
+                "messages": [
+                    {
+                        "type": 0,
+                        "platform": "facebook",
+                        "speech": "Choisissez votre categorie"
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre téléphone",
+                        "subtitle": "",
+                        "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre PC",
+                        "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre Box",
+                        "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+                        "buttons": [
+                            {
+                                "text": "Chosir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Autre",
+                        "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "speech": ""
+                    }
+                ]
+            }));
+            break;
+        case 'equipement':
+            res.send(JSON.stringify({
+                "speech": "",
+                "messages": [
+                    {
+                        "type": 0,
+                        "platform": "facebook",
+                        "speech": "Choisissez votre categorie"
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre téléphone",
+                        "subtitle": "",
+                        "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre PC",
+                        "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre Box",
+                        "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+                        "buttons": [
+                            {
+                                "text": "Chosir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Autre",
+                        "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+                        "buttons": [
+                            {
+                                "text": "Choisir",
+                                "postback": "https://www.messenger.fr"
+                            }
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "speech": ""
+                    }
+                ]
+            }));
             break;
         default:
-
     }
 })
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))

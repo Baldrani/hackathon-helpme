@@ -9,15 +9,12 @@
           "id": "af3eeea3-2951-4bf8-b299-37b5df9eaf4a",
           "actions": [
             {
-              "test": "test"
-            },
-            {
-              "test": "test"
+              "chooseCategory": "Choix catégorie"
             }
           ]
         }
       ]
     }
   ],
-  "count": 4
+  "count": 3
 }

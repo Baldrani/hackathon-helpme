@@ -179,6 +179,7 @@ app.post('/', (req, res) => {
 
             break;
         case 'menu-principal':
+            addAction(user_id, session_id, {chooseCategory: "Choix catégorie"})
             res.send(JSON.stringify({
                 "speech": "",
                 "messages": [
@@ -243,7 +244,9 @@ app.post('/', (req, res) => {
                 ]
             }));
             break;
+
         case 'equipement':
+            addAction(user_id, session_id, {chooseCategory: "Choix catégorie"})
             res.send(JSON.stringify({
                 "speech": "",
                 "messages": [

@@ -212,30 +212,35 @@ app.post('/', (req, res) => {
                             "buttons": [{
                                 "text": "Choisir",
                                 "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 0,
-                            "speech": ""
-                        }
-                    ]
-                }));
-                break;
-            case 'menu-principal':
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [{
-                            "type": 0,
-                            "platform": "facebook",
-                            "speech": "Choisissez votre categorie"
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre téléphone",
-                            "subtitle": "",
-                            "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
-                            "buttons": [{
+                            }
+                        ]
+                    },
+                    {
+                        "type": 0,
+                        "speech": ""
+                    }
+                ]
+            }));
+
+            break;
+        case 'menu-principal':
+            addAction(user_id, session_id, {chooseCategory: "Choix catégorie"})
+            res.send(JSON.stringify({
+                "speech": "",
+                "messages": [
+                    {
+                        "type": 0,
+                        "platform": "facebook",
+                        "speech": "Choisissez votre categorie"
+                    },
+                    {
+                        "type": 1,
+                        "platform": "facebook",
+                        "title": "Problème au niveau de votre téléphone",
+                        "subtitle": "",
+                        "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                        "buttons": [
+                            {
                                 "text": "Choisir",
                                 "postback": "https://www.messenger.fr"
                             }]
@@ -265,32 +270,6 @@ app.post('/', (req, res) => {
                             "platform": "facebook",
                             "title": "Autre",
                             "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 0,
-                            "speech": ""
-                        }
-                    ]
-                }));
-                break;
-            case 'equipement':
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [{
-                            "type": 0,
-                            "platform": "facebook",
-                            "speech": "Choisissez votre categorie"
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre téléphone",
-                            "subtitle": "",
-                            "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
                             "buttons": [{
                                 "text": "Choisir",
                                 "postback": "https://www.messenger.fr"

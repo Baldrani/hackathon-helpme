@@ -2,6 +2,9 @@
 //AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o
 //Cx 002153875831383056448:refccz5vls0
 
+//PSID 1750745394945827
+//FBaccess token EAAIpmZC2uBGwBAFARxZCGgcNqaCz1hcbohy6iY9BENtwu2T7VdhwnaW8Y7R8uPWIakrJxqZCuWWnDlQiR2PSywmA8i0ayhvtu7XZB4kjsHTWESROYo8BHIq8ZCyZAe5Ee79Pz80uzlPR6DMDLFLl8c5r1xkPpWQRKj8E796GS9Ur0LvZA3u58VU9l34s4mAGf2aJZC26kubBgAZDZD
+
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -38,12 +41,20 @@ app.use(express.static(path.join(__dirname, 'public')))
     .set('view engine', 'ejs');
 
 app.post('/', (req, res) => {
+    /*
+    //Get user information from facebook
+    let user_id = req.body.originalRequest.data.sender.id;
+    axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token=EAAIpmZC2uBGwBAFARxZCGgcNqaCz1hcbohy6iY9BENtwu2T7VdhwnaW8Y7R8uPWIakrJxqZCuWWnDlQiR2PSywmA8i0ayhvtu7XZB4kjsHTWESROYo8BHIq8ZCyZAe5Ee79Pz80uzlPR6DMDLFLl8c5r1xkPpWQRKj8E796GS9Ur0LvZA3u58VU9l34s4mAGf2aJZC26kubBgAZDZD')
+        .then(response => {
+            console.log(response)
+        }).catch(error => {
+            console.log(error)
+        })
+    */
     //Working with Dialog Flow
+    /*
     let verb = req.body.result.parameters.HelpingWords;
     let object = req.body.result.parameters.ObjectToRepare;
-    //For test pourpose
-    //let verb = "Reparer";
-    //let object = "Ordinateur";
     /*
     axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q='+verb+'+du+'+object+'&amp;callback=hndlr')
         .then(response => {
@@ -60,10 +71,76 @@ app.post('/', (req, res) => {
             console.log(error);
     })
     */
+    //Check req.body.parameters.name ???
+    /*
+    let routeName = req.body.parameters.name
+    switch(routeName):
+        case repare-video-yes :
+            break;
+        case repare-video-no :
+            res.send'(JSON.stringify({
+            "speech": "A REMPLIR",
+            "meessages": [
+                {
+                  "type": 4,
+                  "platform": "facebook",
+                  "payload": {
+                    "facebook": {
+                        "attachment":{
+                          "type":"template",
+                          "payload":{
+                            "template_type":"button",
+                            "text":"Need further assistance? Talk to a representative",
+                            "buttons":[
+                              {
+                                "type":"phone_number",
+                                "title":"Call Representative",
+                                "payload":"+33613499190"
+                              }
+                            ]
+                          }
+                      }
+                    }
+                  }
+              }
+            ]
+        }))
+        */
+        /*
+    if(req.body.result.parameters.Test === "pommes"){
+        res.send(JSON.stringify({
+            "speech": "",
+            "messages": [
+                    {
+                      "type": 2,
+                      "platform": "facebook",
+                      "title": "Oui",
+                      "replies": [
+                        "Yes",
+                        "No"
+                      ]
+                  },
+                  {
+                  "text": "Here is a quick reply!",
+                      "quick_replies":[
+                        {
+                          "content_type":"text",
+                          "title":"Search",
+                          "payload":"<POSTBACK_PAYLOAD>",
+                          "image_url":"http://example.com/img/red.png"
+                        },
+                        {
+                          "content_type":"location"
+                        }
+                      ]
+                  }
+                ]
+        }))
+    }*/
     res.send(JSON.stringify({
         "speech": "",
         "messages": [
-
+            /*
             {
               "buttons": [
                 {
@@ -87,6 +164,9 @@ app.post('/', (req, res) => {
               "title": "Quick Reply Title",
               "type": 2
             },
+            */
+            //Working but since it is MP4
+            /*
             {
               "type": 4,
               "platform": "facebook",
@@ -101,6 +181,9 @@ app.post('/', (req, res) => {
                 }
               }
             },
+            */
+            //Working but as a link
+            /*
             {
               "type": 4,
               "platform": "facebook",
@@ -120,51 +203,80 @@ app.post('/', (req, res) => {
                 }
               }
             },
+            */
+            /*
+            //Not working over 30MO
+            {
+              "type": 4,
+              "platform": "facebook",
+              "payload": {
+                "facebook": {
+                    "attachment":{
+                      "type":"video",
+                      "payload":{
+                        "url":"https://www.youtube.com/watch?v=kMhneiuJ2Xs",
+                        "is_reusable":true
+                      }
+                    }
+                  }
+                }
+              }
+              */
+            //Working funny exemple
+            /*
+            {
+              "type": 4,
+              "platform": "facebook",
+              "payload": {
+                "facebook": {
+                    "attachment":{
+                      "type":"template",
+                      "payload":{
+                        "template_type":"open_graph",
+                        "elements":[
+                           {
+                            "url":"https://open.spotify.com/track/7GhIk7Il098yCjg4BQjzvb",
+                            "buttons":[
+                              {
+                                "type":"web_url",
+                                "url":"https://en.wikipedia.org/wiki/Rickrolling",
+                                "title":"View More"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+            },
+            */
+            //Good Assistance return
+            {
+              "type": 4,
+              "platform": "facebook",
+              "payload": {
+                "facebook": {
+                    "attachment":{
+                      "type":"template",
+                      "payload":{
+                        "template_type":"button",
+                        "text":"Need further assistance? Talk to a representative",
+                        "buttons":[
+                          {
+                            "type":"phone_number",
+                            "title":"Call Representative",
+                            "payload":"+33613499190"
+                          }
+                        ]
+                      }
+                  }
+                }
+              }
+          }
         ]
     }
     ))
-    /*
-    res.send(JSON.stringify({
-      'slack': {
-        'text': 'This is a text response for Slack.',
-        'attachments': [
-          {
-            'title': 'Title: this is a title',
-            'title_link': 'https://assistant.google.com/',
-            'text': 'This is an attachment.  Text in attachments can include \'quotes\' and most other unicode characters including emoji 📱.  Attachments also upport line\nbreaks.',
-            'image_url': 'https://developers.google.com/actions/images/badges/XPM_BADGING_GoogleAssistant_VER.png',
-            'fallback': 'This is a fallback.'
-          }
-        ]
-      },
-      'facebook': {
-        'attachment': {
-          'type': 'template',
-          'payload': {
-            'template_type': 'generic',
-            'elements': [
-              {
-                'title': 'Title: this is a title',
-                'image_url': 'https://developers.google.com/actions/images/badges/XPM_BADGING_GoogleAssistant_VER.png',
-                'subtitle': 'This is a subtitle',
-                'default_action': {
-                  'type': 'web_url',
-                  'url': 'https://assistant.google.com/'
-                },
-                'buttons': [
-                  {
-                    'type': 'web_url',
-                    'url': 'https://assistant.google.com/',
-                    'title': 'This is a button'
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      }
-    }))
-    */
 })
 /*
 app.get('/', (req, res) => {

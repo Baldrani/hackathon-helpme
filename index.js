@@ -11,6 +11,19 @@ const bodyParser = require('body-parser')
 const axios = require('axios')
 const PORT = process.env.PORT || 5000
 
+const fs = require('fs')
+fs.writeFile('db.json', '')
+
+
+//D
+const low = require('lowdb')
+const FileSync = require('lowdb/adapters/FileSync')
+const adapter = new FileSync('db.json')
+const db = low(adapter)
+// Set some defaults (required if your JSON file is empty)
+db.defaults({ users: [{id: 'init'}], count: 0 })
+  .write()
+
 let app = express();
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -36,14 +49,63 @@ function selectOnlyYoutube(data){
     return res != null ? res : "Nous n'avons pas trouvé de vidéo Youtube";
 }
 
+function writeToDB(userId, sessionId, insert)
+{
+    db.get('users')
+}
+
 app.use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'ejs');
 
 app.post('/', (req, res) => {
+
+    console.log(req.body.result.metadata.intentName)
+
+    let user_id = req.body.originalRequest.data.sender.id;
+    let session_id = req.body.sessionId;
+    //BUG WTF WITH THE .id
+    let dbUsers = db.get('users');
+    if(dbUsers.find({id: 'init'}).value() === undefined){
+        if(dbUsers.find({ id:  user_id }).value().id ===  user_id){
+            //edit
+            console.log('edit')
+            //Check session
+            dbUsers.find({ id:  user_id }).get('interventions')
+              .push({ id: 1, title: 'lowdb is awesome'})
+              .write()
+        } else {
+            //create
+            console.log('create')
+            dbUsers.push({id: user_id, interventions: []})
+                .write()
+        }
+    } else {
+        console.log('initial_create')
+        dbUsers.push({id: user_id, interventions: []})
+            .write()
+        console.log('remove init')
+        dbUsers.remove({ id: 'init' })
+          .write()
+    }
+    /*
+
+    */
+    /*
+      .push({ id: req.body.sessionId, title: 'lowdb is awesome'})
+      .write()
+     */
+     /*
+      // Set a user using Lodash shorthand syntax
+      db.set('user.name', 'typicode')
+        .write()
+      */
+
+      // Increment count
+      db.update('count', n => n + 1)
+        .write()
     /*
     //Get user information from facebook
-    let user_id = req.body.originalRequest.data.sender.id;
     axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token=EAAIpmZC2uBGwBAFARxZCGgcNqaCz1hcbohy6iY9BENtwu2T7VdhwnaW8Y7R8uPWIakrJxqZCuWWnDlQiR2PSywmA8i0ayhvtu7XZB4kjsHTWESROYo8BHIq8ZCyZAe5Ee79Pz80uzlPR6DMDLFLl8c5r1xkPpWQRKj8E796GS9Ur0LvZA3u58VU9l34s4mAGf2aJZC26kubBgAZDZD')
         .then(response => {
             console.log(response)
@@ -261,7 +323,7 @@ app.post('/', (req, res) => {
                       "type":"template",
                       "payload":{
                         "template_type":"button",
-                        "text":"Need further assistance? Talk to a representative",
+                        "text":"Vous avez besoin d'aide, contactez nos assistants ?",
                         "buttons":[
                           {
                             "type":"phone_number",

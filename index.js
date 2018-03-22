@@ -3,7 +3,7 @@
 //Cx 002153875831383056448:refccz5vls0
 
 //PSID 1750745394945827
-const provisionalFbToken = "EAAIpmZC2uBGwBAKiNZARfwjTaaRZBGKfS3QtsGqhetaz8uCbtUyUBe18xBSRz4ZCrKnmxvdK2BxYm2pQzOaUnHPWRh2ET8vrDnp2ZCznlhzfk2ZCOnkGnes4E4nv8YkwLTWRDDvENX5ZBbZA4LfuGLO7yZAAUYQeRJARWFGKEBrcP6CAC6gZCw1CUMQ7eiBvwMkb2X6FBPLIPihwZDZD"
+const provisionalFbToken = "EAAIpmZC2uBGwBAMNRFJZBGboVRcrGZA6PhxZCvdkTZA2QiuYiEIGs5GvsZBPMRZBVZBDluYUPb8JgwctzYjyNjWKWacEKVIlViPuS8zpo0qU0m3glWgZAZB1HOMEwGRrmLxkfJts5wyDc4l7B34bZAsZCIebDZCLfRUoFqdylneDOY8w18pS4UrulcW3ZBeSkCZBlDG4J0ZD"
 
 const express = require('express')
 const path = require('path')
@@ -56,20 +56,15 @@ app.use(express.static(path.join(__dirname, 'public')))
     .set('views', path.join(__dirname, 'views'))
     .set('view engine', 'ejs');
 
-function getFacebookInfo(user_id)
+async function getFacebookInfo(user_id)
 {
     //Get user information from facebook
-    axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token='+provisionalFbToken)
-        .then(response => {
-            let json = {id: response.data.id, last_name: response.data.last_name, first_name: response.data.first_name, interventions: []}
-            console.log(json)
-            return JSON.stringify(json)
-        }).catch(error => {
-            console.log(error)
-        })
+    const response = await axios.get('https://graph.facebook.com/v2.6/'+user_id+'?fields=first_name,last_name,profile_pic&access_token='+provisionalFbToken);
+    let json = {id: response.data.id, last_name: response.data.last_name, first_name: response.data.first_name, interventions: []}
+    return json
 }
 
-function addAction(user_id, session_id, action)
+async function addAction(user_id, session_id, action)
 {
     if(dbUsers.find({id: 'init'}).value() === undefined){
         if(dbUsers.find({ id:  user_id }).value().id ===  user_id){
@@ -79,39 +74,34 @@ function addAction(user_id, session_id, action)
                 dbUsers.find({ id:  user_id }).get('interventions')
                   .push({ id: session_id, actions: [] })
                   .write()
+                  addAction(user_id, session_id, action)
             } else {
                 console.log('add action')
                 console.log(dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions').value())
                 dbUsers.find({ id:  user_id }).get('interventions').find({id: session_id}).get('actions')
-                    .push({test: 'test'})
+                    .push(action)
                     .write()
             }
         } else {
+            const user = await getFacebookInfo(user_id);
             console.log('create user')
-            dbUsers.push({id: user_id, interventions: []})
+            dbUsers.push(user)
                 .write()
+            addAction(user_id, session_id, action)
         }
     } else {
+        const user = await getFacebookInfo(user_id)
         console.log('initialisation users')
-        //console.log(getFacebookInfo(user_id))
-        dbUsers.push(getFacebookInfo(user_id))
+        dbUsers.push(user)
             .write()
-        /*
-        dbUsers.push({"id":"1750745394945827","last_name":"Myn","first_name":"Mawel","interventions":[]})
-            .write()
-        */
         console.log('remove init')
         dbUsers.remove({ id: 'init' })
-          .write()
+          .write();
+        addAction(user_id, session_id, action)
     }
     // Increment count
     db.update('count', n => n + 1)
       .write()
-}
-
-function sendMail(user_id)
-{
-    dbUsers.get('')
 }
 
 app.post('/', (req, res) => {
@@ -119,7 +109,7 @@ app.post('/', (req, res) => {
     let session_id = req.body.sessionId;
 
     //console.log(req.body.originalRequest.data.sender.id)
-    addAction(user_id, session_id, getFacebookInfo(user_id))
+    addAction(user_id, session_id, {test: "test"})
     //getFacebookInfo(user_id)
 
     //addAction(user_id, session_id, {test: 'test'})

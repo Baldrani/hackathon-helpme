@@ -108,214 +108,13 @@ app.post('/', (req, res) => {
     let user_id = req.body.originalRequest.data.sender.id;
     let session_id = req.body.sessionId;
 
-    //console.log(req.body.originalRequest.data.sender.id)
     addAction(user_id, session_id, {test: "test"})
-    //getFacebookInfo(user_id)
 
-    //addAction(user_id, session_id, {test: 'test'})
-    //addAction(user_id, session_id, getFacebookInfo(user_id))
     switch (req.body.result.metadata.intentName) {
         case 'test':
-            //Working with Dialog Flow
-            /*
-            let verb = req.body.result.parameters.HelpingWords;
-            let object = req.body.result.parameters.ObjectToRepare;
-            /*
-            axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q='+verb+'+du+'+object+'&amp;callback=hndlr')
-                .then(response => {
-                    console.log(response)
-                    let data = response.data
-                    let urlYt = selectOnlyYoutube(data)
-                    res.setHeader('Content-Type', 'application/json')
-                    res.send(JSON.stringify({
-                            "speech": "Voici une vidéo youtube pour vous aider " + urlYt,
-                        "displayText": "Voici une vidéo youtube pour vous aider " + urlYt,
-                    }))
-                })
-                .catch(error => {
-                    console.log(error);
-            })
-            */
-            //Check req.body.parameters.name ???
-            /*
-            let routeName = req.body.parameters.name
-            switch(routeName):
-                case repare-video-yes :
-                    break;
-                case repare-video-no :
-                    res.send'(JSON.stringify({
-                    "speech": "A REMPLIR",
-                    "meessages": [
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                            "facebook": {
-                                "attachment":{
-                                  "type":"template",
-                                  "payload":{
-                                    "template_type":"button",
-                                    "text":"Need further assistance? Talk to a representative",
-                                    "buttons":[
-                                      {
-                                        "type":"phone_number",
-                                        "title":"Call Representative",
-                                        "payload":"+33613499190"
-                                      }
-                                    ]
-                                  }
-                              }
-                            }
-                          }
-                      }
-                    ]
-                }))
-                */
-                /*
-            if(req.body.result.parameters.Test === "pommes"){
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                            {
-                              "type": 2,
-                              "platform": "facebook",
-                              "title": "Oui",
-                              "replies": [
-                                "Yes",
-                                "No"
-                              ]
-                          },
-                          {
-                          "text": "Here is a quick reply!",
-                              "quick_replies":[
-                                {
-                                  "content_type":"text",
-                                  "title":"Search",
-                                  "payload":"<POSTBACK_PAYLOAD>",
-                                  "image_url":"http://example.com/img/red.png"
-                                },
-                                {
-                                  "content_type":"location"
-                                }
-                              ]
-                          }
-                        ]
-                }))
-            }*/
-            res.send(JSON.stringify({
-                "speech": "",
+            res.send(JSON.stringify(
+                {"speech": "",
                 "messages": [
-                    /*
-                    {
-                      "buttons": [
-                        {
-                          "postback": "Card Link URL or text",
-                          "text": "Card Link Title"
-                        }
-                      ],
-                      "imageUrl": "http://urltoimage.com",
-                      "platform": "facebook",
-                      "subtitle": "Card Subtitle",
-                      "title": "Card Title",
-                      "type": 1
-                    },
-                    {
-                      "platform": "facebook",
-                      "replies": [
-                        "Quick reply 1",
-                        "Quick reply 2",
-                        "Quick reply 3"
-                      ],
-                      "title": "Quick Reply Title",
-                      "type": 2
-                    },
-                    */
-                    //Working but since it is MP4
-                    /*
-                    {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                        "facebook": {
-                          "attachment": {
-                            "type": "video",
-                            "payload": {
-                              "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    */
-                    //Working but as a link
-                    /*
-                    {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                        "facebook": {
-                            "attachment":{
-                            "type":"template",
-                            "payload":{
-                              "template_type":"open_graph",
-                              "elements":[
-                                 {
-                                  "url":"https://www.youtube.com/watch?v=y9A1MEbgLyA"
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      }
-                    },
-                    */
-                    /*
-                    //Not working over 30MO
-                    {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                        "facebook": {
-                            "attachment":{
-                              "type":"video",
-                              "payload":{
-                                "url":"https://www.youtube.com/watch?v=kMhneiuJ2Xs",
-                                "is_reusable":true
-                              }
-                            }
-                          }
-                        }
-                      }
-                      */
-                    //Working funny exemple
-                    /*
-                    {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                        "facebook": {
-                            "attachment":{
-                              "type":"template",
-                              "payload":{
-                                "template_type":"open_graph",
-                                "elements":[
-                                   {
-                                    "url":"https://open.spotify.com/track/7GhIk7Il098yCjg4BQjzvb",
-                                    "buttons":[
-                                      {
-                                        "type":"web_url",
-                                        "url":"https://en.wikipedia.org/wiki/Rickrolling",
-                                        "title":"View More"
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            }
-                          }
-                        }
-                    },
-                    */
                     //Good Assistance return
                     {
                       "type": 4,
@@ -341,26 +140,10 @@ app.post('/', (req, res) => {
                   }
                 ]
             }
-            ))
+            ));
             break;
         default:
 
     }
 })
-/*
-app.get('/', (req, res) => {
-    axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q=manger+du+fromage&amp;callback=hndlr')
-        .then(response => {
-            let data = response.data
-            let variable = selectOnlyYoutube(data)
-            res.render('pages/index', {
-                //'data': JSON.stringify(eval(response))
-                'data' : variable
-            })
-        })
-        .catch(error => {
-            console.log(error);
-        })
-})
-*/
 .listen(PORT, () => console.log(`Listening on ${ PORT }`))

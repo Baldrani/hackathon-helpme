@@ -10,11 +10,14 @@
           "actions": [
             {
               "test": "test"
+            },
+            {
+              "test": "test"
             }
           ]
         }
       ]
     }
   ],
-  "count": 3
+  "count": 4
 }

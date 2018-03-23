@@ -1,28 +1,8 @@
 {
   "users": [
     {
-      "id": "1750745394945827",
-      "last_name": "Myn",
-      "first_name": "Mawel",
-      "interventions": [
-        {
-          "id": "da1c6751-dccb-4217-bf46-c9a794ec2b00",
-          "actions": [
-            {
-              "Action": "A appellé un assistant"
-            }
-          ]
-        },
-        {
-          "id": "aa1c313f-2438-4c1e-a3c0-5d360bc5d432",
-          "actions": [
-            {
-              "Action": "A appellé un assistant"
-            }
-          ]
-        }
-      ]
+      "id": "init"
     }
   ],
-  "count": 5
+  "count": 0
 }

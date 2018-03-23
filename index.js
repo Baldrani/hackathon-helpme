@@ -3,19 +3,15 @@
 //Cx 002153875831383056448:refccz5vls0
 
 //PSID 1750745394945827
+const PORT = process.env.PORT || 5000
 const provisionalFbToken = "EAAIpmZC2uBGwBAFlHd6pDCN11IIPegQP4CXHGzU8h4M6emjQvDwo13Il21D6CvcQr61ZCjzFRha8vZBy9OWNDQcaqillW2exLzb5wNWIqOGNoO7M48Qgq8UpooNbmjcmJPwhkTF2ouMVZCKU4fIXcmkg83SebZCFFqW230BidKW7NdXYRYRgSqYuatCiCiuAZD"
-
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const axios = require('axios')
-const PORT = process.env.PORT || 5000
-
 //Writing file
 const fs = require('fs')
-fs.writeFile('db.json', '')
-
-
+fs.writeFile('db.json', '') //Clean db.json on server launch
 //DB
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
@@ -36,10 +32,11 @@ const sendmail = require('sendmail')();
 
 let app = express();
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({
-    extended: true
-})); // support encoded bodies
+app.use(bodyParser.json())
+    .use(bodyParser.urlencoded({extended: true}))
+    .use(express.static(path.join(__dirname, 'public')))
+    .set('views', path.join(__dirname, 'views'))
+    .set('view engine', 'ejs');
 
 function selectOnlyYoutube(data) {
     let res;
@@ -56,12 +53,8 @@ function selectOnlyYoutube(data) {
             res = item.link
         }
     })
-    return res != null ? res : "Nous n'avons pas trouvé de vidéo Youtube";
+    return res != null ? res : null;
 }
-
-app.use(express.static(path.join(__dirname, 'public')))
-    .set('views', path.join(__dirname, 'views'))
-    .set('view engine', 'ejs');
 
 async function getFacebookInfo(user_id) {
     //Get user information from facebook
@@ -365,12 +358,79 @@ app.post('/', (req, res) => {
                 ]
                 }))
                 break;
+            case 'show-youtube-solution':
+                addAction(user_id, session_id, {Action: "Peut regarder vidéo youtube"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        {
+                          "type": 4,
+                          "platform": "facebook",
+                          "payload": {
+                            "facebook": {
+                                "attachment":{
+                                "type":"template",
+                                "payload":{
+                                  "template_type":"open_graph",
+                                  "elements":[
+                                     {
+                                      "url":"https://www.youtube.com/watch?v=y9A1MEbgLyA"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                      },
+                    ]
+                }))
+                break;
+            case 'turn-in-off - no':
+                addAction(user_id, session_id, {Action: "A débranché et rebranché son appareil"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Faite le puis revenez me dire ce qu'il en est."
+                        },
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Est-ce que cela a marché ?"
+                        },
+                        {
+                        "type": 2,
+                        "platform": "facebook",
+                        "title": "",
+                        "replies": [
+                            "Oui",
+                            "Non"
+                            ]
+                        },
+                        {
+                          "type": 4,
+                          "platform": "facebook",
+                          "payload": {
+                            "facebook": {
+                              "attachment": {
+                                "type": "video",
+                                "payload": {
+                                  "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
+                                }
+                              }
+                            }
+                          }
+                        },
+                    ]
+                }))
+                break;
             case 'turn-in-off' :
                 addAction(user_id, session_id, {Action: "Enteindre et rallumer"})
                 res.send(JSON.stringify({
                     "speech": "",
                     "messages": [
-                        /*
                         {
                         "type": 2,
                         "platform": "facebook",
@@ -379,44 +439,26 @@ app.post('/', (req, res) => {
                             "Oui",
                             "Non"
                             ]
-                        },*/
+                        },
                         {
                           "type": 4,
                           "platform": "facebook",
                           "payload": {
-                              "template_type":"generic",
-                              "elements":[
-                                 {
-                                  "title":"Welcome to Peter'\''s Hats",
-                                  "image_url":"https://petersfancybrownhats.com/company_image.png",
-                                  "subtitle":"We'\''ve got the right hat for everyone.",
-                                  "default_action": {
-                                    "type": "web_url",
-                                    "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
-                                    "messenger_extensions": true,
-                                    "webview_height_ratio": "tall",
-                                    "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
-                                  },
-                                  "buttons":[
-                                    {
-                                      "type":"web_url",
-                                      "url":"https://petersfancybrownhats.com",
-                                      "title":"View Website"
-                                    },{
-                                      "type":"postback",
-                                      "title":"Start Chatting",
-                                      "payload":"DEVELOPER_DEFINED_PAYLOAD"
-                                    }
-                                  ]
-                                }
-                              ]
+                              "template_type":"button",
+                                "text":"Test",
+                                "buttons": [
+                                  {
+                                    "postback": "Card Link URL or text",
+                                    "text": "Card Link Title"
+                                  }
+                                ]
                           }
                         },
                     ]
                 }))
                 break;
             case 'turn-in-off - yes':
-                addAction(user_id, session_id, {Action: "Je veux contacter un conseiller"})
+                addAction(user_id, session_id, {Action: "Le client a déjà débranché et rebranché sa box"})
                 res.send(JSON.stringify({
                     "speech": "",
                     "messages": [
@@ -464,46 +506,31 @@ app.post('/', (req, res) => {
                     ]
                 }))
                 break;
-            case 'turn-in-off - no':
-                addAction(user_id, session_id, {Action: "A débranché et rebranché son appareil"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Faite le puis revenez me dire ce qu'il en est."
-                        },
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Est-ce que cela a marché ?"
-                        },
-                        {
-                        "type": 2,
-                        "platform": "facebook",
-                        "title": "",
-                        "replies": [
-                            "Oui",
-                            "Non"
-                            ]
-                        },
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                            "facebook": {
-                              "attachment": {
-                                "type": "video",
-                                "payload": {
-                                  "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
-                                }
-                              }
-                            }
-                          }
-                        },
-                    ]
-                }))
+            //Bonus
+            case 'youtube-repare-basic':
+                addAction(user_id, session_id, {Action: "Lui a été proposé de regarder une vidéo youtube"})
+                let verb = req.body.result.parameters.HelpingWords;
+                let object = req.body.result.parameters.ObjectToRepare;
+                axios.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyBxAQPLyybYD6XOXde0J3WdEBOObCf8t8o&cx=002153875831383056448:refccz5vls0&q='+verb+'+du+'+object+'&amp;callback=hndlr')
+                    .then(response => {
+                        let data = response.data
+                        let urlYt = selectOnlyYoutube(data)
+                        res.setHeader('Content-Type', 'application/json')
+                        if (typeof urlYt != 'undefined' && urlYt != null) {
+                            res.send(JSON.stringify({
+                                "speech": "Voici une vidéo youtube pour vous aider " + urlYt,
+                                "displayText": "Voici une vidéo youtube pour vous aider " + urlYt,
+                            }))
+                        } else {
+                            res.send(JSON.stringify({
+                                "speech": "Désolé, nous n'avons pas trouvé de vidéo Youtube",
+                                "displayText": "Désolé, nous n'avons pas trouvé de vidéo Youtube",
+                            }))
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                })
                 break;
             default:
         }

@@ -4,7 +4,7 @@
 
 //PSID 1750745394945827
 const PORT = process.env.PORT || 5000
-const provisionalFbToken = "EAAIpmZC2uBGwBAFlHd6pDCN11IIPegQP4CXHGzU8h4M6emjQvDwo13Il21D6CvcQr61ZCjzFRha8vZBy9OWNDQcaqillW2exLzb5wNWIqOGNoO7M48Qgq8UpooNbmjcmJPwhkTF2ouMVZCKU4fIXcmkg83SebZCFFqW230BidKW7NdXYRYRgSqYuatCiCiuAZD"
+const provisionalFbToken = "EAAIpmZC2uBGwBANDZAIYFQjxqOlGEi6wGFwfwTtSAWhomiqwZBE3flMFx05YL7tVuJr7McyvkiOvoFxi4fP10e8Tm3lT3X3tsGdqD34zZAz575pXEQiy1YzqQFZCbuZCE6BosSsaAq5B6ZCym6xWZCvAbgkswSFLPZBvsQfQ4kZBib1wZDZD"
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -18,20 +18,12 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('db.json')
 const db = low(adapter)
 // Set some defaults (required if your JSON file is empty)
-db.defaults({
-        users: [{
-            id: 'init'
-        }],
-        count: 0
-    })
-    .write()
-let dbUsers = db.get('users');
-
+db.defaults({users: [{id: 'init'}],count: 0}).write()
+const dbUsers = db.get('users');
 //Mail
 const sendmail = require('sendmail')();
 
 let app = express();
-
 app.use(bodyParser.json())
     .use(bodyParser.urlencoded({extended: true}))
     .use(express.static(path.join(__dirname, 'public')))
@@ -44,12 +36,9 @@ function selectOnlyYoutube(data) {
     data.items.forEach((item) => {
         if (item.displayLink.match(reg)) {
             //HERE Logic of selection if multiple resuts
-            //console.log(item)
-            /*
-            console.log(item.htmlSnippet.replace(/<(?:.|\n)*?>/gm, '')
+            /* console.log(item.htmlSnippet.replace(/<(?:.|\n)*?>/gm, '')
             .replace(/&.+;/gm,'')
-            )
-            */
+            ) */
             res = item.link
         }
     })
@@ -75,10 +64,7 @@ async function addAction(user_id, session_id, action) {
             if (dbUsers.find({id: user_id}).get('interventions').find({id: session_id}).value() === undefined) {
                 //console.log('create session')
                 dbUsers.find({id: user_id}).get('interventions')
-                    .push({
-                        id: session_id,
-                        actions: []
-                    })
+                    .push({id: session_id,actions: []})
                     .write()
                 addAction(user_id, session_id, action)
             } else {
@@ -133,14 +119,14 @@ app.post('/', (req, res) => {
         switch (req.body.result.metadata.intentName) {
             case 'close':
                 addAction(user_id, session_id, {
-                    chooseCategory: "A fermé la discussion"
+                    Action: "A fermé la discussion"
                 }).then( () => {
                     closeDiscussion(dbUsers.find({id: user_id}).value())
                 })
                 break;
             case 'test':
                 addAction(user_id, session_id, {
-                    chooseCategory: "Test"
+                    Action: "Test"
                 })
                 res.send(JSON.stringify({
                     "speech": "",
@@ -195,7 +181,7 @@ app.post('/', (req, res) => {
             }));
             break;
         case 'menu-principal':
-            addAction(user_id, session_id, {chooseCategory: "Menu"})
+            addAction(user_id, session_id, {Action: "Menu"})
             res.send(JSON.stringify({
                 "speech": "",
                 "messages": [
@@ -212,8 +198,8 @@ app.post('/', (req, res) => {
                       "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
                       "buttons": [
                         {
-                          "text": "Choisir",
-                          "postback": "https://www.messenger.fr"
+                          "text": "Probleme telephone",
+                          "postback": "Probleme telephone"
                         }
                       ]
                     },
@@ -337,26 +323,27 @@ app.post('/', (req, res) => {
                       "type": 4,
                       "platform": "facebook",
                       "payload": {
-                        "facebook": {
-                            "attachment":{
-                              "type":"template",
-                              "payload":{
-                                "template_type":"button",
-                                "text":"Vous avez besoin d'aide, contactez nos assistants ?",
-                                "buttons":[
+                          "facebook": {
+                            "attachment": {
+                              "type": "template",
+                              "payload": {
+                                "template_type": "button",
+                                "text": "Dans ce cas voulez vous être mit en relation directe avec un technicien Apple qui prendra en charge votre problème:",
+                                "buttons": [
                                   {
-                                    "type":"phone_number",
-                                    "title":"Call Representative",
-                                    "payload":"+33613499190"
+                                    "type": "phone_number",
+                                    "title": "Call Representative",
+                                    "payload": "+33613499190"
                                   }
                                 ]
                               }
+                            }
                           }
                         }
-                      }
                   }
                 ]
                 }))
+                closeDiscussion(dbUsers.find({id: user_id}).value())
                 break;
             case 'show-youtube-solution':
                 addAction(user_id, session_id, {Action: "Peut regarder vidéo youtube"})
@@ -520,7 +507,26 @@ app.post('/', (req, res) => {
                             res.send(JSON.stringify({
                                 "speech": "Voici une vidéo youtube pour vous aider " + urlYt,
                                 "displayText": "Voici une vidéo youtube pour vous aider " + urlYt,
-                            }))
+                                "messages" : [{
+                                      "type": 4,
+                                      "platform": "facebook",
+                                      "payload": {
+                                        "facebook": {
+                                            "attachment":{
+                                            "type":"template",
+                                            "payload":{
+                                              "template_type":"open_graph",
+                                              "elements":[
+                                                 {
+                                                  "url":urlYt
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        }
+                                      }
+                                  },]
+                              }))
                         } else {
                             res.send(JSON.stringify({
                                 "speech": "Désolé, nous n'avons pas trouvé de vidéo Youtube",
@@ -532,6 +538,145 @@ app.post('/', (req, res) => {
                         console.log(error);
                 })
                 break;
+                //CUSTOME USE CASE 2
+                case 'iPhone':
+                    addAction(user_id, session_id, {})
+                    addAction(user_id, session_id, {TypeDeProbleme: "iPhone"})
+                    res.send(JSON.stringify({
+                        "speech": "",
+                        "displayText": "",
+                        "speech": "",
+                        "messages": [
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Quel est le problème avec votre iPhone ?"
+                        },
+                        {
+                          "type": 0,
+                          "speech": ""
+                        }
+                      ]
+                    }))
+                    break;
+                case 'iphone-haut-parleur':
+                    addAction(user_id, session_id, {TypeDeProbleme: "Haut Parleur"})
+                    res.send(JSON.stringify({
+                        "contexts": [
+                          {
+                            "name": "iphone-haut-parleur-followup",
+                            "parameters": {},
+                            "lifespan": 2
+                          }
+                        ],
+                        "speech": "",
+                        "displayText": "",
+                        "speech": "",
+                        "messages": [
+                            {
+                              "type": 0,
+                              "platform": "facebook",
+                              "speech": "Si je me souviens bien vous possédez un Iphone 6 ?"
+                            },
+                            {
+                              "type": 0,
+                              "speech": ""
+                            }
+                          ]
+                    }))
+                    break;
+                case 'iphone-haut-parleur - yes':
+                    addAction(user_id, session_id, {Action: "Yes"})
+                    res.send(JSON.stringify({
+                        "contexts": [
+                          {
+                            "name": "iphone-haut-parleur-followup",
+                            "parameters": {},
+                            "lifespan": 1
+                          },
+                          {
+                            "name": "iphone-haut-parleur-yes-followup",
+                            "parameters": {},
+                            "lifespan": 2
+                          }
+                        ],
+                        "messages": [
+                           {
+                             "type": 1,
+                             "platform": "facebook",
+                             "title": "J’ai trouvé une rubrique sur le site d’apple qui concerne votre problème.",
+                             "subtitle": "Voici le liens du site d’apple pour l’assistance en ligne :",
+                             "imageUrl": "https://support.apple.com/content/dam/edam/applecare/images/en_US/homepage/homepage-hero.image.large_2x.jpg",
+                             "buttons": [
+                               {
+                                 "text": "J'y vais",
+                                 "postback": "https://support.apple.com/fr-fr/HT203026"
+                               }
+                             ]
+                           },
+                           {
+                             "type": 0,
+                             "platform": "facebook",
+                             "speech": "Est ce que le lien vous a aidé à résoudre le problème ?"
+                           },
+                           {
+                             "type": 0,
+                             "speech": ""
+                           }
+                         ]
+                    }))
+                    break;
+                case 'iphone-haut-parleur - yes - no':
+                    addAction(user_id, session_id, {Action: "Le lien n'a servi à rien"})
+                    res.send(JSON.stringify({
+                        "contexts": [
+                          {
+                            "name": "iphone-haut-parleur-yes-no-followup",
+                            "parameters": {},
+                            "lifespan": 2
+                          },
+                          {
+                            "name": "iphone-haut-parleur-yes-followup",
+                            "parameters": {},
+                            "lifespan": 1
+                          }
+                        ],
+                        "messages": [
+                          {
+                            "type": 4,
+                            "platform": "facebook",
+                            "payload": {
+                              "facebook": {
+                                "attachment": {
+                                  "type": "template",
+                                  "payload": {
+                                    "template_type": "button",
+                                    "text": "Dans ce cas voulez vous être mit en relation directe avec un technicien Apple qui prendra en charge votre problème:",
+                                    "buttons": [
+                                      {
+                                        "type": "phone_number",
+                                        "title": "Call Representative",
+                                        "payload": "+33613499190"
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": 0,
+                            "platform": "facebook",
+                            "speech": "Est ce que votre problème est résolu ?"
+                          },
+                          {
+                            "type": 0,
+                            "speech": ""
+                          }
+                        ]
+                    }))
+                    closeDiscussion(dbUsers.find({id: user_id}).value())
+                    break;
             default:
         }
     })

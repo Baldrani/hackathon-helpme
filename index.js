@@ -4,7 +4,7 @@
 
 //PSID 1750745394945827
 const PORT = process.env.PORT || 5000
-const provisionalFbToken = "EAAIpmZC2uBGwBANDZAIYFQjxqOlGEi6wGFwfwTtSAWhomiqwZBE3flMFx05YL7tVuJr7McyvkiOvoFxi4fP10e8Tm3lT3X3tsGdqD34zZAz575pXEQiy1YzqQFZCbuZCE6BosSsaAq5B6ZCym6xWZCvAbgkswSFLPZBvsQfQ4kZBib1wZDZD"
+const provisionalFbToken = "EAAIpmZC2uBGwBABWApwgGTxBJfmYipPUEg9gR9yjCXf0vqgAsRG2LF8R8vr071M6nXdMFrOJkowA6ERNFtxZC1IMZCrV8nJsNf9q2byRQ9bOz5I8XB3PWT4P4cNFUv0pwv3WHGAzXnKM9UxZBNTjNvLCAbqTpxRCZByu1OjJnRBrcU3kxCmxBHJNZBup3WbMwZD"
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
@@ -96,8 +96,9 @@ async function addAction(user_id, session_id, action) {
 }
 
 function closeDiscussion(user) {
+    console.log(user)
     sendmail({
-        from: 'Djingo.HelpMe@orange.fr',
+        from: 'Handy@orange.fr',
         to: 'mael.mayon@free.fr',
         subject: 'Assistance required',
         html: 'Le client '+user.first_name+' '+user.last_name+' souhaite votre aide.',
@@ -328,7 +329,7 @@ app.post('/', (req, res) => {
                               "type": "template",
                               "payload": {
                                 "template_type": "button",
-                                "text": "Dans ce cas voulez vous être mit en relation directe avec un technicien Apple qui prendra en charge votre problème:",
+                                "text": "Dans ce cas voulez vous être mis en relation directe avec un technicien Apple qui prendra en charge votre problème:",
                                 "buttons": [
                                   {
                                     "type": "phone_number",
@@ -539,9 +540,8 @@ app.post('/', (req, res) => {
                 })
                 break;
                 //CUSTOME USE CASE 2
-                case 'iPhone':
-                    addAction(user_id, session_id, {})
-                    addAction(user_id, session_id, {TypeDeProbleme: "iPhone"})
+                case 'iphone':
+                    addAction(user_id, session_id, {TypeDAppareil: "iPhone 6"})
                     res.send(JSON.stringify({
                         "speech": "",
                         "displayText": "",
@@ -655,7 +655,7 @@ app.post('/', (req, res) => {
                                     "buttons": [
                                       {
                                         "type": "phone_number",
-                                        "title": "Call Representative",
+                                        "title": "Appeler un assistant",
                                         "payload": "+33613499190"
                                       }
                                     ]

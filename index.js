@@ -3,7 +3,7 @@
 //Cx 002153875831383056448:refccz5vls0
 
 //PSID 1750745394945827
-const provisionalFbToken = "EAAIpmZC2uBGwBAMNRFJZBGboVRcrGZA6PhxZCvdkTZA2QiuYiEIGs5GvsZBPMRZBVZBDluYUPb8JgwctzYjyNjWKWacEKVIlViPuS8zpo0qU0m3glWgZAZB1HOMEwGRrmLxkfJts5wyDc4l7B34bZAsZCIebDZCLfRUoFqdylneDOY8w18pS4UrulcW3ZBeSkCZBlDG4J0ZD"
+const provisionalFbToken = "EAAIpmZC2uBGwBAFlHd6pDCN11IIPegQP4CXHGzU8h4M6emjQvDwo13Il21D6CvcQr61ZCjzFRha8vZBy9OWNDQcaqillW2exLzb5wNWIqOGNoO7M48Qgq8UpooNbmjcmJPwhkTF2ouMVZCKU4fIXcmkg83SebZCFFqW230BidKW7NdXYRYRgSqYuatCiCiuAZD"
 
 const express = require('express')
 const path = require('path')
@@ -76,22 +76,12 @@ async function getFacebookInfo(user_id) {
 }
 
 async function addAction(user_id, session_id, action) {
-    if (dbUsers.find({
-            id: 'init'
-        }).value() === undefined) {
-        if (dbUsers.find({
-                id: user_id
-            }).value().id === user_id) {
+    if (dbUsers.find({id: 'init'}).value() === undefined) {
+        if (dbUsers.find({id: user_id}).value().id === user_id) {
             //Check session
-            if (dbUsers.find({
-                    id: user_id
-                }).get('interventions').find({
-                    id: session_id
-                }).value() === undefined) {
+            if (dbUsers.find({id: user_id}).get('interventions').find({id: session_id}).value() === undefined) {
                 //console.log('create session')
-                dbUsers.find({
-                        id: user_id
-                    }).get('interventions')
+                dbUsers.find({id: user_id}).get('interventions')
                     .push({
                         id: session_id,
                         actions: []
@@ -100,11 +90,7 @@ async function addAction(user_id, session_id, action) {
                 addAction(user_id, session_id, action)
             } else {
                 //console.log('add action')
-                dbUsers.find({
-                        id: user_id
-                    }).get('interventions').find({
-                        id: session_id
-                    }).get('actions')
+                dbUsers.find({id: user_id}).get('interventions').find({id: session_id}).get('actions')
                     .push(action)
                     .write()
             }
@@ -121,9 +107,7 @@ async function addAction(user_id, session_id, action) {
         dbUsers.push(user)
             .write()
         //console.log('remove init')
-        dbUsers.remove({
-                id: 'init'
-            })
+        dbUsers.remove({id: 'init'})
             .write();
         addAction(user_id, session_id, action)
     }
@@ -149,7 +133,6 @@ function closeDiscussion(user) {
 }
 
 app.post('/', (req, res) => {
-
         let user_id = req.body.originalRequest.data.sender.id;
         let session_id = req.body.sessionId;
         let dbUsers = db.get('users');
@@ -157,14 +140,14 @@ app.post('/', (req, res) => {
         switch (req.body.result.metadata.intentName) {
             case 'close':
                 addAction(user_id, session_id, {
-                    chooseCategory: "Close Discussion"
+                    chooseCategory: "A fermé la discussion"
                 }).then( () => {
                     closeDiscussion(dbUsers.find({id: user_id}).value())
                 })
                 break;
             case 'test':
                 addAction(user_id, session_id, {
-                    chooseCategory: "Choix catégorie"
+                    chooseCategory: "Test"
                 })
                 res.send(JSON.stringify({
                     "speech": "",
@@ -214,103 +197,313 @@ app.post('/', (req, res) => {
                                 "postback": "https://www.messenger.fr"
                             }
                         ]
-                    },
-                    {
-                        "type": 0,
-                        "speech": ""
                     }
                 ]
             }));
-
             break;
         case 'menu-principal':
-            addAction(user_id, session_id, {chooseCategory: "Choix catégorie"})
+            addAction(user_id, session_id, {chooseCategory: "Menu"})
             res.send(JSON.stringify({
                 "speech": "",
                 "messages": [
                     {
-                        "type": 0,
-                        "platform": "facebook",
-                        "speech": "Choisissez votre categorie"
+                      "type": 0,
+                      "platform": "facebook",
+                      "speech": "Choisissez votre categorie"
                     },
                     {
-                        "type": 1,
-                        "platform": "facebook",
-                        "title": "Problème au niveau de votre téléphone",
-                        "subtitle": "",
-                        "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
-                        "buttons": [
-                            {
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
+                      "type": 1,
+                      "platform": "facebook",
+                      "title": "Problème au niveau de votre téléphone",
+                      "subtitle": "",
+                      "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                      "buttons": [
                         {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre PC",
-                            "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre Box",
-                            "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
-                            "buttons": [{
-                                "text": "Chosir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Autre",
-                            "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre PC",
-                            "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre Box",
-                            "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
-                            "buttons": [{
-                                "text": "Chosir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Autre",
-                            "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 0,
-                            "speech": ""
+                          "text": "Choisir",
+                          "postback": "https://www.messenger.fr"
                         }
+                      ]
+                    },
+                    {
+                      "type": 1,
+                      "platform": "facebook",
+                      "title": "Problème au niveau de votre PC",
+                      "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+                      "buttons": [
+                        {
+                          "text": "Choisir",
+                          "postback": "https://www.messenger.fr"
+                        }
+                      ]
+                    },
+                    {
+                      "type": 1,
+                      "platform": "facebook",
+                      "title": "Problème au niveau de votre Box",
+                      "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+                      "buttons": [
+                        {
+                          "text": "Chosir",
+                          "postback": "https://www.messenger.fr"
+                        }
+                      ]
+                    },
+                    {
+                      "type": 1,
+                      "platform": "facebook",
+                      "title": "Autre",
+                      "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+                      "buttons": [
+                        {
+                          "text": "Choisir",
+                          "postback": "https://www.messenger.fr"
+                        }
+                      ]
+                    }
                     ]
                 }));
+                break;
+            case 'DefaultWelcomeIntent':
+                addAction(user_id, session_id, {Bienvenue: "Coucou"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Coucou toi !"
+                        },
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Que puis je faire pour vous aider ?"
+                        },
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Choisissez votre categorie"
+                        },
+                        {
+                          "type": 1,
+                          "platform": "facebook",
+                          "title": "Problème au niveau de votre téléphone",
+                          "subtitle": "",
+                          "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+                          "buttons": [
+                            {
+                              "text": "Choisir",
+                              "postback": "https://www.messenger.fr"
+                            }
+                          ]
+                        },
+                        {
+                          "type": 1,
+                          "platform": "facebook",
+                          "title": "Problème au niveau de votre PC",
+                          "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+                          "buttons": [
+                            {
+                              "text": "Choisir",
+                              "postback": "https://www.messenger.fr"
+                            }
+                          ]
+                        },
+                        {
+                          "type": 1,
+                          "platform": "facebook",
+                          "title": "Problème au niveau de votre Box",
+                          "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+                          "buttons": [
+                            {
+                              "text": "Chosir",
+                              "postback": "https://www.messenger.fr"
+                            }
+                          ]
+                        },
+                        {
+                          "type": 1,
+                          "platform": "facebook",
+                          "title": "Autre",
+                          "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+                          "buttons": [
+                            {
+                              "text": "Choisir",
+                              "postback": "https://www.messenger.fr"
+                            }
+                          ]
+                        }
+                    ]
+                }))
+                break;
+            case 'call-assistance':
+                addAction(user_id, session_id, {Action: "A appellé un assistant"})
+                res.send(JSON.stringify({"speech": "",
+                "messages": [
+                    //Good Assistance return
+                    {
+                      "type": 4,
+                      "platform": "facebook",
+                      "payload": {
+                        "facebook": {
+                            "attachment":{
+                              "type":"template",
+                              "payload":{
+                                "template_type":"button",
+                                "text":"Vous avez besoin d'aide, contactez nos assistants ?",
+                                "buttons":[
+                                  {
+                                    "type":"phone_number",
+                                    "title":"Call Representative",
+                                    "payload":"+33613499190"
+                                  }
+                                ]
+                              }
+                          }
+                        }
+                      }
+                  }
+                ]
+                }))
+                break;
+            case 'turn-in-off' :
+                addAction(user_id, session_id, {Action: "Enteindre et rallumer"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        /*
+                        {
+                        "type": 2,
+                        "platform": "facebook",
+                        "title": "Avez-vous essayé de débrancher et rebrancher votre appareil ?",
+                        "replies": [
+                            "Oui",
+                            "Non"
+                            ]
+                        },*/
+                        {
+                          "type": 4,
+                          "platform": "facebook",
+                          "payload": {
+                              "template_type":"generic",
+                              "elements":[
+                                 {
+                                  "title":"Welcome to Peter'\''s Hats",
+                                  "image_url":"https://petersfancybrownhats.com/company_image.png",
+                                  "subtitle":"We'\''ve got the right hat for everyone.",
+                                  "default_action": {
+                                    "type": "web_url",
+                                    "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
+                                    "messenger_extensions": true,
+                                    "webview_height_ratio": "tall",
+                                    "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
+                                  },
+                                  "buttons":[
+                                    {
+                                      "type":"web_url",
+                                      "url":"https://petersfancybrownhats.com",
+                                      "title":"View Website"
+                                    },{
+                                      "type":"postback",
+                                      "title":"Start Chatting",
+                                      "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                                    }
+                                  ]
+                                }
+                              ]
+                          }
+                        },
+                    ]
+                }))
+                break;
+            case 'turn-in-off - yes':
+                addAction(user_id, session_id, {Action: "Je veux contacter un conseiller"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        {
+                        "type": 2,
+                        "platform": "facebook",
+                        "title": "Voullez vous contacter un de nos conseiller ?",
+                        "replies": [
+                            "Oui",
+                            "Non"
+                            ]
+                        },
+                        {
+                          "type": 4,
+                          "platform": "facebook",
+                          "payload": {
+                              "template_type":"generic",
+                              "elements":[
+                                 {
+                                  "title":"Welcome to Peter'\''s Hats",
+                                  "image_url":"https://petersfancybrownhats.com/company_image.png",
+                                  "subtitle":"We'\''ve got the right hat for everyone.",
+                                  "default_action": {
+                                    "type": "web_url",
+                                    "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
+                                    "messenger_extensions": true,
+                                    "webview_height_ratio": "tall",
+                                    "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
+                                  },
+                                  "buttons":[
+                                    {
+                                      "type":"web_url",
+                                      "url":"https://petersfancybrownhats.com",
+                                      "title":"View Website"
+                                    },{
+                                      "type":"postback",
+                                      "title":"Start Chatting",
+                                      "payload":"DEVELOPER_DEFINED_PAYLOAD"
+                                    }
+                                  ]
+                                }
+                              ]
+                          }
+                        },
+                    ]
+                }))
+                break;
+            case 'turn-in-off - no':
+                addAction(user_id, session_id, {Action: "A débranché et rebranché son appareil"})
+                res.send(JSON.stringify({
+                    "speech": "",
+                    "messages": [
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Faite le puis revenez me dire ce qu'il en est."
+                        },
+                        {
+                          "type": 0,
+                          "platform": "facebook",
+                          "speech": "Est-ce que cela a marché ?"
+                        },
+                        {
+                        "type": 2,
+                        "platform": "facebook",
+                        "title": "",
+                        "replies": [
+                            "Oui",
+                            "Non"
+                            ]
+                        },
+                        {
+                          "type": 4,
+                          "platform": "facebook",
+                          "payload": {
+                            "facebook": {
+                              "attachment": {
+                                "type": "video",
+                                "payload": {
+                                  "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
+                                }
+                              }
+                            }
+                          }
+                        },
+                    ]
+                }))
                 break;
             default:
         }

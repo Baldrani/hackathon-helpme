@@ -6,18 +6,23 @@
       "first_name": "Mawel",
       "interventions": [
         {
-          "id": "3a32090a-6ee9-471f-a486-496902cd847d",
+          "id": "da1c6751-dccb-4217-bf46-c9a794ec2b00",
           "actions": [
             {
-              "chooseCategory": "Choix catégorie"
-            },
+              "Action": "A appellé un assistant"
+            }
+          ]
+        },
+        {
+          "id": "aa1c313f-2438-4c1e-a3c0-5d360bc5d432",
+          "actions": [
             {
-              "chooseCategory": "Close Discussion"
+              "Action": "A appellé un assistant"
             }
           ]
         }
       ]
     }
   ],
-  "count": 4
+  "count": 5
 }

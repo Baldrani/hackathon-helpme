@@ -1,0 +1,24 @@
+{
+    "speech": "",
+    "messages": [
+        {
+          "type": 4,
+          "platform": "facebook",
+          "payload": {
+            "facebook": {
+                "attachment":{
+                "type":"template",
+                "payload":{
+                  "template_type":"open_graph",
+                  "elements":[
+                     {
+                      "url":"https://www.youtube.com/watch?v=y9A1MEbgLyA"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+      },
+    ]
+}

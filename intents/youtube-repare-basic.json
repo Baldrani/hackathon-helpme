@@ -1,0 +1,23 @@
+{
+    "speech": "Voici une vidéo youtube pour vous aider " + urlYt,
+    "displayText": "Voici une vidéo youtube pour vous aider " + urlYt,
+    "messages" : [{
+          "type": 4,
+          "platform": "facebook",
+          "payload": {
+            "facebook": {
+                "attachment":{
+                "type":"template",
+                "payload":{
+                  "template_type":"open_graph",
+                  "elements":[
+                     {
+                      "url":urlYt
+                    }
+                  ]
+                }
+              }
+            }
+          }
+      },]
+  }

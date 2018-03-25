@@ -1,0 +1,34 @@
+{
+    "contexts": [
+      {
+        "name": "iphone-haut-parleur-followup",
+        "parameters": {},
+        "lifespan": 1
+      },
+      {
+        "name": "iphone-haut-parleur-yes-followup",
+        "parameters": {},
+        "lifespan": 2
+      }
+    ],
+    "messages": [
+       {
+         "type": 1,
+         "platform": "facebook",
+         "title": "J’ai trouvé une rubrique sur le site d’apple qui concerne votre problème.",
+         "subtitle": "Voici le liens du site d’apple pour l’assistance en ligne :",
+         "imageUrl": "https://support.apple.com/content/dam/edam/applecare/images/en_US/homepage/homepage-hero.image.large_2x.jpg",
+         "buttons": [
+           {
+             "text": "J'y vais",
+             "postback": "https://support.apple.com/fr-fr/HT203026"
+           }
+         ]
+       },
+       {
+         "type": 0,
+         "platform": "facebook",
+         "speech": "Est ce que le lien vous a aidé à résoudre le problème ?"
+       }
+     ]
+}

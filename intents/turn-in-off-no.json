@@ -1,0 +1,38 @@
+{
+    "speech": "",
+    "messages": [
+        {
+          "type": 0,
+          "platform": "facebook",
+          "speech": "Faite le puis revenez me dire ce qu'il en est."
+        },
+        {
+          "type": 0,
+          "platform": "facebook",
+          "speech": "Est-ce que cela a marché ?"
+        },
+        {
+        "type": 2,
+        "platform": "facebook",
+        "title": "",
+        "replies": [
+            "Oui",
+            "Non"
+            ]
+        },
+        {
+          "type": 4,
+          "platform": "facebook",
+          "payload": {
+            "facebook": {
+              "attachment": {
+                "type": "video",
+                "payload": {
+                  "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
+                }
+              }
+            }
+          }
+        },
+    ]
+}

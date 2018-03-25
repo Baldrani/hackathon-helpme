@@ -26,9 +26,6 @@ const sendmail = require('sendmail')();
 let app = express();
 app.use(bodyParser.json())
     .use(bodyParser.urlencoded({extended: true}))
-    .use(express.static(path.join(__dirname, 'public')))
-    .set('views', path.join(__dirname, 'views'))
-    .set('view engine', 'ejs');
 
 function selectOnlyYoutube(data) {
     let res;
@@ -96,7 +93,6 @@ async function addAction(user_id, session_id, action) {
 }
 
 function closeDiscussion(user) {
-    console.log(user)
     sendmail({
         from: 'Handy@orange.fr',
         to: 'mael.mayon@free.fr',
@@ -113,389 +109,69 @@ function closeDiscussion(user) {
 }
 
 app.post('/', (req, res) => {
+
         let user_id = req.body.originalRequest.data.sender.id;
         let session_id = req.body.sessionId;
         let dbUsers = db.get('users');
 
         switch (req.body.result.metadata.intentName) {
+
             case 'close':
-                addAction(user_id, session_id, {
-                    Action: "A fermé la discussion"
-                }).then( () => {
+                addAction(user_id, session_id, {Action: "A fermé la discussion"})
+                .then(() => {
                     closeDiscussion(dbUsers.find({id: user_id}).value())
                 })
                 break;
             case 'test':
-                addAction(user_id, session_id, {
-                    Action: "Test"
-                })
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [{
-                            "type": 0,
-                            "platform": "facebook",
-                            "speech": "Choisissez votre categorie"
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre téléphone",
-                            "subtitle": "",
-                            "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre PC",
-                            "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Problème au niveau de votre Box",
-                            "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
-                            "buttons": [{
-                                "text": "Chosir",
-                                "postback": "https://www.messenger.fr"
-                            }]
-                        },
-                        {
-                            "type": 1,
-                            "platform": "facebook",
-                            "title": "Autre",
-                            "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                            "buttons": [{
-                                "text": "Choisir",
-                                "postback": "https://www.messenger.fr"
-                            }
-                        ]
-                    }
-                ]
-            }));
-            break;
-        case 'menu-principal':
-            addAction(user_id, session_id, {Action: "Menu"})
-            res.send(JSON.stringify({
-                "speech": "",
-                "messages": [
-                    {
-                      "type": 0,
-                      "platform": "facebook",
-                      "speech": "Choisissez votre categorie"
-                    },
-                    {
-                      "type": 1,
-                      "platform": "facebook",
-                      "title": "Problème au niveau de votre téléphone",
-                      "subtitle": "",
-                      "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
-                      "buttons": [
-                        {
-                          "text": "Probleme telephone",
-                          "postback": "Probleme telephone"
-                        }
-                      ]
-                    },
-                    {
-                      "type": 1,
-                      "platform": "facebook",
-                      "title": "Problème au niveau de votre PC",
-                      "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
-                      "buttons": [
-                        {
-                          "text": "Choisir",
-                          "postback": "https://www.messenger.fr"
-                        }
-                      ]
-                    },
-                    {
-                      "type": 1,
-                      "platform": "facebook",
-                      "title": "Problème au niveau de votre Box",
-                      "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
-                      "buttons": [
-                        {
-                          "text": "Chosir",
-                          "postback": "https://www.messenger.fr"
-                        }
-                      ]
-                    },
-                    {
-                      "type": 1,
-                      "platform": "facebook",
-                      "title": "Autre",
-                      "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                      "buttons": [
-                        {
-                          "text": "Choisir",
-                          "postback": "https://www.messenger.fr"
-                        }
-                      ]
-                    }
-                    ]
-                }));
+                addAction(user_id, session_id, {Action: "Test"})
+                res.send(JSON.stringify(fs.readFileSync('intents/close.json')));
                 break;
             case 'DefaultWelcomeIntent':
                 addAction(user_id, session_id, {Bienvenue: "Coucou"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Coucou toi !"
-                        },
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Que puis je faire pour vous aider ?"
-                        },
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Choisissez votre categorie"
-                        },
-                        {
-                          "type": 1,
-                          "platform": "facebook",
-                          "title": "Problème au niveau de votre téléphone",
-                          "subtitle": "",
-                          "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
-                          "buttons": [
-                            {
-                              "text": "Choisir",
-                              "postback": "https://www.messenger.fr"
-                            }
-                          ]
-                        },
-                        {
-                          "type": 1,
-                          "platform": "facebook",
-                          "title": "Problème au niveau de votre PC",
-                          "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
-                          "buttons": [
-                            {
-                              "text": "Choisir",
-                              "postback": "https://www.messenger.fr"
-                            }
-                          ]
-                        },
-                        {
-                          "type": 1,
-                          "platform": "facebook",
-                          "title": "Problème au niveau de votre Box",
-                          "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
-                          "buttons": [
-                            {
-                              "text": "Chosir",
-                              "postback": "https://www.messenger.fr"
-                            }
-                          ]
-                        },
-                        {
-                          "type": 1,
-                          "platform": "facebook",
-                          "title": "Autre",
-                          "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
-                          "buttons": [
-                            {
-                              "text": "Choisir",
-                              "postback": "https://www.messenger.fr"
-                            }
-                          ]
-                        }
-                    ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/DefaultWelcomeIntent.json')))
                 break;
             case 'call-assistance':
                 addAction(user_id, session_id, {Action: "A appellé un assistant"})
-                res.send(JSON.stringify({"speech": "",
-                "messages": [
-                    //Good Assistance return
-                    {
-                      "type": 4,
-                      "platform": "facebook",
-                      "payload": {
-                          "facebook": {
-                            "attachment": {
-                              "type": "template",
-                              "payload": {
-                                "template_type": "button",
-                                "text": "Dans ce cas voulez vous être mis en relation directe avec un technicien Apple qui prendra en charge votre problème:",
-                                "buttons": [
-                                  {
-                                    "type": "phone_number",
-                                    "title": "Call Representative",
-                                    "payload": "+33613499190"
-                                  }
-                                ]
-                              }
-                            }
-                          }
-                        }
-                  }
-                ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/call-assistance.json')))
                 closeDiscussion(dbUsers.find({id: user_id}).value())
                 break;
             case 'show-youtube-solution':
                 addAction(user_id, session_id, {Action: "Peut regarder vidéo youtube"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                            "facebook": {
-                                "attachment":{
-                                "type":"template",
-                                "payload":{
-                                  "template_type":"open_graph",
-                                  "elements":[
-                                     {
-                                      "url":"https://www.youtube.com/watch?v=y9A1MEbgLyA"
-                                    }
-                                  ]
-                                }
-                              }
-                            }
-                          }
-                      },
-                    ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/show-youtube-solution.json')))
                 break;
-            case 'turn-in-off - no':
+            case 'turn-in-off-no':
                 addAction(user_id, session_id, {Action: "A débranché et rebranché son appareil"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Faite le puis revenez me dire ce qu'il en est."
-                        },
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Est-ce que cela a marché ?"
-                        },
-                        {
-                        "type": 2,
-                        "platform": "facebook",
-                        "title": "",
-                        "replies": [
-                            "Oui",
-                            "Non"
-                            ]
-                        },
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                            "facebook": {
-                              "attachment": {
-                                "type": "video",
-                                "payload": {
-                                  "url": "https://fpdl.vimeocdn.com/vimeo-prod-skyfire-std-us/01/1512/8/207561527/708213662.mp4?token=1521676371-0xc32b465ad712789534229346b914a525fbc46dff"
-                                }
-                              }
-                            }
-                          }
-                        },
-                    ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/turn-in-off-no.json')))
                 break;
             case 'turn-in-off' :
                 addAction(user_id, session_id, {Action: "Enteindre et rallumer"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                        "type": 2,
-                        "platform": "facebook",
-                        "title": "Avez-vous essayé de débrancher et rebrancher votre appareil ?",
-                        "replies": [
-                            "Oui",
-                            "Non"
-                            ]
-                        },
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                              "template_type":"button",
-                                "text":"Test",
-                                "buttons": [
-                                  {
-                                    "postback": "Card Link URL or text",
-                                    "text": "Card Link Title"
-                                  }
-                                ]
-                          }
-                        },
-                    ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/turn-in-off.json')))
                 break;
-            case 'turn-in-off - yes':
+            case 'turn-in-off-yes':
                 addAction(user_id, session_id, {Action: "Le client a déjà débranché et rebranché sa box"})
-                res.send(JSON.stringify({
-                    "speech": "",
-                    "messages": [
-                        {
-                        "type": 2,
-                        "platform": "facebook",
-                        "title": "Voullez vous contacter un de nos conseiller ?",
-                        "replies": [
-                            "Oui",
-                            "Non"
-                            ]
-                        },
-                        {
-                          "type": 4,
-                          "platform": "facebook",
-                          "payload": {
-                              "template_type":"generic",
-                              "elements":[
-                                 {
-                                  "title":"Welcome to Peter'\''s Hats",
-                                  "image_url":"https://petersfancybrownhats.com/company_image.png",
-                                  "subtitle":"We'\''ve got the right hat for everyone.",
-                                  "default_action": {
-                                    "type": "web_url",
-                                    "url": "https://peterssendreceiveapp.ngrok.io/view?item=103",
-                                    "messenger_extensions": true,
-                                    "webview_height_ratio": "tall",
-                                    "fallback_url": "https://peterssendreceiveapp.ngrok.io/"
-                                  },
-                                  "buttons":[
-                                    {
-                                      "type":"web_url",
-                                      "url":"https://petersfancybrownhats.com",
-                                      "title":"View Website"
-                                    },{
-                                      "type":"postback",
-                                      "title":"Start Chatting",
-                                      "payload":"DEVELOPER_DEFINED_PAYLOAD"
-                                    }
-                                  ]
-                                }
-                              ]
-                          }
-                        },
-                    ]
-                }))
+                res.send(JSON.stringify(fs.readFileSync('intents/turn-in-off-yes.json')))
+                break;
+            //CUSTOME USE CASE 2
+            case 'iphone':
+                addAction(user_id, session_id, {TypeDAppareil: "iPhone 6"})
+                res.send(JSON.stringify(fs.readFileSync('intents/iphone.json')))
+                break;
+            case 'iphone-haut-parleur':
+                addAction(user_id, session_id, {TypeDeProbleme: "Haut Parleur"})
+                res.send(JSON.stringify(fs.readFileSync('intents/iphone-haut-parleur.json')))
+                break;
+            case 'iphone-haut-parleur-yes':
+                addAction(user_id, session_id, {Action: "Yes"})
+                res.send(JSON.stringify(fs.readFileSync('intents/iphone-haut-parleur-yes.json')))
+                break;
+            case 'iphone-haut-parleur-yes-no':
+                addAction(user_id, session_id, {Action: "Le lien n'a servi à rien"})
+                res.send(JSON.stringify(fs.readFileSync('intents/iphone-haut-parleur-yes-no.json')))
+                closeDiscussion(dbUsers.find({id: user_id}).value())
                 break;
             //Bonus
             case 'youtube-repare-basic':
+                console.log('test')
                 addAction(user_id, session_id, {Action: "Lui a été proposé de regarder une vidéo youtube"})
                 let verb = req.body.result.parameters.HelpingWords;
                 let object = req.body.result.parameters.ObjectToRepare;
@@ -527,7 +203,8 @@ app.post('/', (req, res) => {
                                         }
                                       }
                                   },]
-                              }))
+                              }
+                        ))
                         } else {
                             res.send(JSON.stringify({
                                 "speech": "Désolé, nous n'avons pas trouvé de vidéo Youtube",
@@ -539,145 +216,12 @@ app.post('/', (req, res) => {
                         console.log(error);
                 })
                 break;
-                //CUSTOME USE CASE 2
-                case 'iphone':
-                    addAction(user_id, session_id, {TypeDAppareil: "iPhone 6"})
-                    res.send(JSON.stringify({
-                        "speech": "",
-                        "displayText": "",
-                        "speech": "",
-                        "messages": [
-                        {
-                          "type": 0,
-                          "platform": "facebook",
-                          "speech": "Quel est le problème avec votre iPhone ?"
-                        },
-                        {
-                          "type": 0,
-                          "speech": ""
-                        }
-                      ]
-                    }))
-                    break;
-                case 'iphone-haut-parleur':
-                    addAction(user_id, session_id, {TypeDeProbleme: "Haut Parleur"})
-                    res.send(JSON.stringify({
-                        "contexts": [
-                          {
-                            "name": "iphone-haut-parleur-followup",
-                            "parameters": {},
-                            "lifespan": 2
-                          }
-                        ],
-                        "speech": "",
-                        "displayText": "",
-                        "speech": "",
-                        "messages": [
-                            {
-                              "type": 0,
-                              "platform": "facebook",
-                              "speech": "Si je me souviens bien vous possédez un Iphone 6 ?"
-                            },
-                            {
-                              "type": 0,
-                              "speech": ""
-                            }
-                          ]
-                    }))
-                    break;
-                case 'iphone-haut-parleur - yes':
-                    addAction(user_id, session_id, {Action: "Yes"})
-                    res.send(JSON.stringify({
-                        "contexts": [
-                          {
-                            "name": "iphone-haut-parleur-followup",
-                            "parameters": {},
-                            "lifespan": 1
-                          },
-                          {
-                            "name": "iphone-haut-parleur-yes-followup",
-                            "parameters": {},
-                            "lifespan": 2
-                          }
-                        ],
-                        "messages": [
-                           {
-                             "type": 1,
-                             "platform": "facebook",
-                             "title": "J’ai trouvé une rubrique sur le site d’apple qui concerne votre problème.",
-                             "subtitle": "Voici le liens du site d’apple pour l’assistance en ligne :",
-                             "imageUrl": "https://support.apple.com/content/dam/edam/applecare/images/en_US/homepage/homepage-hero.image.large_2x.jpg",
-                             "buttons": [
-                               {
-                                 "text": "J'y vais",
-                                 "postback": "https://support.apple.com/fr-fr/HT203026"
-                               }
-                             ]
-                           },
-                           {
-                             "type": 0,
-                             "platform": "facebook",
-                             "speech": "Est ce que le lien vous a aidé à résoudre le problème ?"
-                           },
-                           {
-                             "type": 0,
-                             "speech": ""
-                           }
-                         ]
-                    }))
-                    break;
-                case 'iphone-haut-parleur - yes - no':
-                    addAction(user_id, session_id, {Action: "Le lien n'a servi à rien"})
-                    res.send(JSON.stringify({
-                        "contexts": [
-                          {
-                            "name": "iphone-haut-parleur-yes-no-followup",
-                            "parameters": {},
-                            "lifespan": 2
-                          },
-                          {
-                            "name": "iphone-haut-parleur-yes-followup",
-                            "parameters": {},
-                            "lifespan": 1
-                          }
-                        ],
-                        "messages": [
-                          {
-                            "type": 4,
-                            "platform": "facebook",
-                            "payload": {
-                              "facebook": {
-                                "attachment": {
-                                  "type": "template",
-                                  "payload": {
-                                    "template_type": "button",
-                                    "text": "Dans ce cas voulez vous être mit en relation directe avec un technicien Apple qui prendra en charge votre problème:",
-                                    "buttons": [
-                                      {
-                                        "type": "phone_number",
-                                        "title": "Appeler un assistant",
-                                        "payload": "+33613499190"
-                                      }
-                                    ]
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          {
-                            "type": 0,
-                            "platform": "facebook",
-                            "speech": "Est ce que votre problème est résolu ?"
-                          },
-                          {
-                            "type": 0,
-                            "speech": ""
-                          }
-                        ]
-                    }))
-                    closeDiscussion(dbUsers.find({id: user_id}).value())
-                    break;
+            case 'menu-principal':
+                addAction(user_id, session_id, {Action: "Menu"})
+                res.send(JSON.stringify(fs.readFileSync('intents/menu-principal.json')));
+                break;
             default:
+                console.log(req.body)
         }
     })
     .listen(PORT, () => console.log(`Listening on ${ PORT }`))

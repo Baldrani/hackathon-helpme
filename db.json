@@ -1,26 +1,8 @@
 {
   "users": [
     {
-      "id": "1750745394945827",
-      "last_name": "Myn",
-      "first_name": "Mawel",
-      "interventions": [
-        {
-          "id": "7d023817-a428-4cb2-8a97-be74a732c45d",
-          "actions": [
-            {
-              "TypeDeProbleme": "Haut Parleur"
-            },
-            {
-              "Action": "Yes"
-            },
-            {
-              "Action": "Le lien n'a servi à rien"
-            }
-          ]
-        }
-      ]
+      "id": "init"
     }
   ],
-  "count": 5
+  "count": 0
 }

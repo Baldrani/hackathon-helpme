@@ -1,0 +1,28 @@
+{
+    "speech": "",
+    "messages": [
+        {
+        "type": 2,
+        "platform": "facebook",
+        "title": "Avez-vous essayé de débrancher et rebrancher votre appareil ?",
+        "replies": [
+            "Oui",
+            "Non"
+            ]
+        },
+        {
+          "type": 4,
+          "platform": "facebook",
+          "payload": {
+              "template_type":"button",
+                "text":"Test",
+                "buttons": [
+                  {
+                    "postback": "Card Link URL or text",
+                    "text": "Card Link Title"
+                  }
+                ]
+          }
+        },
+    ]
+}

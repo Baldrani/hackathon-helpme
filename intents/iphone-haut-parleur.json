@@ -1,0 +1,19 @@
+{
+    "contexts": [
+      {
+        "name": "iphone-haut-parleur-followup",
+        "parameters": {},
+        "lifespan": 2
+      }
+    ],
+    "speech": "",
+    "displayText": "",
+    "speech": "",
+    "messages": [
+        {
+          "type": 0,
+          "platform": "facebook",
+          "speech": "Si je me souviens bien vous possédez un Iphone 6 ?"
+        }
+      ]
+}

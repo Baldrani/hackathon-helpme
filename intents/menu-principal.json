@@ -1,0 +1,59 @@
+{
+    "speech": "",
+    "messages": [
+    {
+      "type": 0,
+      "platform": "facebook",
+      "speech": "Choisissez votre categorie"
+    },
+    {
+      "type": 1,
+      "platform": "facebook",
+      "title": "Problème au niveau de votre téléphone",
+      "subtitle": "",
+      "imageUrl": "https://education.ti.com/-/media/ti/images/education/customer-support/phone.png?rev=&h=385&w=497&la=fr&hash=3060CBA0A19ECD41BD4C79A8CB14EA3BABFA0DC3",
+      "buttons": [
+        {
+          "text": "Probleme telephone",
+          "postback": "Probleme telephone"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "platform": "facebook",
+      "title": "Problème au niveau de votre PC",
+      "imageUrl": "https://static.fnac-static.com/multimedia/fnacdirect/publi/Guides/high-tech/apple-boutique/gamme-mac/iMac-380x320-v2.jpg",
+      "buttons": [
+        {
+          "text": "Choisir",
+          "postback": "https://www.messenger.fr"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "platform": "facebook",
+      "title": "Problème au niveau de votre Box",
+      "imageUrl": "https://www.journaldugeek.com/wp-content/blogs.dir/1/files/2017/04/Livebox-640x287.png",
+      "buttons": [
+        {
+          "text": "Chosir",
+          "postback": "https://www.messenger.fr"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "platform": "facebook",
+      "title": "Autre",
+      "imageUrl": "http://www.climafroid-service.fr/wp-content/uploads/2016/06/logo_sav.png",
+      "buttons": [
+        {
+          "text": "Choisir",
+          "postback": "https://www.messenger.fr"
+        }
+      ]
+    }
+    ]
+}

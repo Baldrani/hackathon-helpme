@@ -1,0 +1,27 @@
+{
+    "speech": "",
+    "messages": [
+    {
+      "type": 4,
+      "platform": "facebook",
+      "payload": {
+          "facebook": {
+            "attachment": {
+              "type": "template",
+              "payload": {
+                "template_type": "button",
+                "text": "Dans ce cas voulez vous être mis en relation directe avec un technicien Apple qui prendra en charge votre problème:",
+                "buttons": [
+                  {
+                    "type": "phone_number",
+                    "title": "Appeller un assistant",
+                    "payload": "+33613499190"
+                  }
+                ]
+              }
+            }
+          }
+        }
+  }
+]
+}

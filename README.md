@@ -1,30 +1,40 @@
+# Usage
+Custom case :
+- Djingo j'ai un problème avec mon iPhone.
+- Mon iPhone ne fait plus de son en haut parleur.
+- Oui
+- Non
+
+Bonus :
+- Menu
+
+- Montre moi une vidéo de comment réparer un ordinateur
+
+Les implémentations sont en parti en dur n'ayant pas eu le temps de faire tous les webhook. Cependant les fonctions sont crées et prêtent à l'emploi. C'est avant tout pour donner une idée des possibilités qui s'offrent à nous à travers un tel bot.
+# Todo
+Use WikiHow API https://market.mashape.com/hargrimm/wikihow
+
+# Local solution
+Download and install [ngrok](https://ngrok.com/) run it on port 5000 : `ngrok http -bind-tls=true 5000`
+
+Use the ngrok address as fulfillment address then go do your folder and run `node index.js`
+
+# Deployement
+`git push heroku master`
+
+And change fulfillement webhook address with :
+
+ https://git.heroku.com/warm-bastion-99604.git
+
 # Workflow
-In case of new feature : 
+In case of new feature :
 
 `git checkout master`
 `git pull --rebase`
-`git checkout -b feature/ma-feature`
+`git checkout -b feature/my-feature`
 
 Once feature is ready, create a pull request
 
-# node-js-getting-started
-
-A barebones Node.js app using [Express 4](http://expressjs.com/).
-
-This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
-
-## Running Locally
-
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
-
-```sh
-$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
 
 ## Deploying to Heroku
 
@@ -36,13 +46,3 @@ $ heroku open
 or
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
-## Documentation
-
-For more information about using Node.js on Heroku, see these Dev Center articles:
-
-- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)

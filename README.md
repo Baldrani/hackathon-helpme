@@ -1,3 +1,8 @@
+!important!
+Nous utilisons des short token access pour l'api facebook.
+La fonctionnalité de l'envoie de la fiche client (celle-ci se basant sur les infos facebook de l'user notamment son id n'esst donc pas disponible si le token n'est pas à jour).
+Je vais essayer de générer un long token mais je ne promets rien d'immédiat. Pour que la démo fonctionne tout de même nous avons rentré en dur l'utilisateur comment étant "Yves".
+
 # Usage
 Custom case :
 - Djingo j'ai un problème avec mon iPhone.
@@ -13,6 +18,7 @@ Bonus :
 Les implémentations sont en parti en dur n'ayant pas eu le temps de faire tous les webhook. Cependant les fonctions sont crées et prêtent à l'emploi. C'est avant tout pour donner une idée des possibilités qui s'offrent à nous à travers un tel bot.
 # Todo
 Use WikiHow API https://market.mashape.com/hargrimm/wikihow
+Generate long live short token facebook
 
 # Local solution
 Download and install [ngrok](https://ngrok.com/) run it on port 5000 : `ngrok http -bind-tls=true 5000`
